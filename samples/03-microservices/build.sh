@@ -27,6 +27,8 @@ echo "Generating various transformations..."
 echo "Generating D2 code samples..."
 ../../seq2boxes order-processing.d2 > build/boxes-default.d2
 ../../seq2boxes --arrows simple order-processing.d2 > build/boxes-simple.d2
+../../seq2boxes --layout horizontal order-processing.d2 > build/boxes-horizontal.d2
+../../seq2boxes --theme cool-classics order-processing.d2 > build/boxes-cool.d2
 
 # Generate README.md
 echo "Generating README.md..."
@@ -37,7 +39,19 @@ This example demonstrates a complex microservices architecture for order process
 
 ## Input Sequence Diagram
 
-![Order Processing Sequence](build/order-processing.svg)
+<img src="build/order-processing.svg" width="50%">
+
+<details>
+<summary>D2 Code</summary>
+
+```d2
+EOF
+
+cat order-processing.d2 >> README.md
+
+cat >> README.md << 'EOF'
+```
+</details>
 
 ## Transformations
 
@@ -45,13 +59,37 @@ This example demonstrates a complex microservices architecture for order process
 
 The default transformation preserves all message details with numbered, colored arrows:
 
-![Default Boxes and Arrows](build/boxes-default.svg)
+<img src="build/boxes-default.svg" width="50%">
+
+<details>
+<summary>Generated D2 Code</summary>
+
+```d2
+EOF
+
+cat build/boxes-default.d2 >> README.md
+
+cat >> README.md << 'EOF'
+```
+</details>
 
 ### Simple Arrows (High-Level View)
 
 With `--arrows simple`, we get a high-level view of which services communicate:
 
-![Simple Arrows](build/boxes-simple.svg)
+<img src="build/boxes-simple.svg" width="50%">
+
+<details>
+<summary>Generated D2 Code</summary>
+
+```d2
+EOF
+
+cat build/boxes-simple.d2 >> README.md
+
+cat >> README.md << 'EOF'
+```
+</details>
 
 This view is particularly useful for understanding the overall system connectivity without the detail of individual messages.
 
@@ -59,37 +97,37 @@ This view is particularly useful for understanding the overall system connectivi
 
 With `--layout horizontal` for a left-to-right flow:
 
-![Horizontal Layout](build/boxes-horizontal.svg)
+<img src="build/boxes-horizontal.svg" width="50%">
+
+<details>
+<summary>Generated D2 Code</summary>
+
+```d2
+EOF
+
+cat build/boxes-horizontal.d2 >> README.md
+
+cat >> README.md << 'EOF'
+```
+</details>
 
 ### Cool Theme
 
 With `--theme cool-classics` for a different aesthetic:
 
-![Cool Theme](build/boxes-cool.svg)
+<img src="build/boxes-cool.svg" width="50%">
 
-## Generated D2 Code
-
-The tool generates clean D2 code. Here's a snippet of the simple arrows version:
+<details>
+<summary>Generated D2 Code</summary>
 
 ```d2
-vars: {
-  d2-config: {
-    theme-id: 0
-  }
-}
+EOF
 
-"Customer" <-> "API Gateway"
-"API Gateway" <-> "Order Service"
-"Order Service" <-> "Inventory Service"
-"Inventory Service" <-> "Warehouse System"
-"Order Service" <-> "Payment Service"
-"Order Service" <-> "Shipping Service"
-"Shipping Service" <-> "Warehouse System"
-"Order Service" <-> "Notification Service"
-"Notification Service" <-> "Customer"
+cat build/boxes-cool.d2 >> README.md
+
+cat >> README.md << 'EOF'
 ```
-
-The full generated D2 files are available in the build directory.
+</details>
 EOF
 
 echo "Done! Check README.md for the results."
