@@ -30,97 +30,93 @@ echo "Saving D2 code outputs..."
 ../../seq2boxes --layout horizontal auth-flow.d2 > build/boxes-horizontal.d2
 ../../seq2boxes --theme vanilla-nitro auth-flow.d2 > build/boxes-vanilla.d2
 
-# Generate README.md
-echo "Generating README.md..."
-cat > README.md << 'EOF'
-# Sample 02: Basic Authentication Flow
+# Function to escape HTML special characters
+escape_html() {
+    sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g; s/"/\&quot;/g; s/'"'"'/\&#39;/g'
+}
 
-This example shows a typical authentication flow with four actors: User, Web Application, Auth Service, and Database.
+# Generate index.html
+echo "Generating index.html..."
 
-## Input Sequence Diagram
+# Read template
+TEMPLATE=$(<../assets/template.html)
 
-<img src="build/auth-flow.svg" width="50%">
-<details>
-<summary>D2 Code</summary>
+# Set title and description
+TITLE="Sample 02: Basic Authentication Flow"
+DESCRIPTION="A typical authentication flow with four actors: User, Web Application, Auth Service, and Database"
 
-```d2
-EOF
+# Prepare original diagram and code
+ORIGINAL_DIAGRAM='<img src="build/auth-flow.svg" alt="Original Sequence Diagram">'
+ORIGINAL_CODE=$(cat auth-flow.d2 | escape_html)
 
-cat auth-flow.d2 >> README.md
+# Build tabs
+TABS='<button class="tab active" data-target="tab-default">Default</button>
+<button class="tab" data-target="tab-simple">Simple Arrows</button>
+<button class="tab" data-target="tab-horizontal">Horizontal</button>
+<button class="tab" data-target="tab-vanilla">Vanilla Theme</button>'
 
-cat >> README.md << 'EOF'
-```
-</details>
+# Build tab contents
+TAB_CONTENTS='<div id="tab-default" class="tab-content">
+  <div class="diagram-container">
+    <img src="build/boxes-default.svg" alt="Default Transformation">
+  </div>
+  <div class="code-container hidden">
+    <div class="code-header">
+      <span>Generated D2 Code - Default</span>
+      <button class="copy-button">Copy</button>
+    </div>
+    <pre><code>'$(cat build/boxes-default.d2 | escape_html)'</code></pre>
+  </div>
+</div>
 
-## Transformations
+<div id="tab-simple" class="tab-content hidden">
+  <div class="diagram-container">
+    <img src="build/boxes-simple.svg" alt="Simple Arrows">
+  </div>
+  <div class="code-container hidden">
+    <div class="code-header">
+      <span>Generated D2 Code - Simple Arrows</span>
+      <button class="copy-button">Copy</button>
+    </div>
+    <pre><code>'$(cat build/boxes-simple.d2 | escape_html)'</code></pre>
+  </div>
+</div>
 
-### Default (Detailed Arrows, Vertical Layout)
+<div id="tab-horizontal" class="tab-content hidden">
+  <div class="diagram-container">
+    <img src="build/boxes-horizontal.svg" alt="Horizontal Layout">
+  </div>
+  <div class="code-container hidden">
+    <div class="code-header">
+      <span>Generated D2 Code - Horizontal Layout</span>
+      <button class="copy-button">Copy</button>
+    </div>
+    <pre><code>'$(cat build/boxes-horizontal.d2 | escape_html)'</code></pre>
+  </div>
+</div>
 
-The default transformation shows numbered arrows with different colors for outward (blue) and return (green) messages:
+<div id="tab-vanilla" class="tab-content hidden">
+  <div class="diagram-container">
+    <img src="build/boxes-vanilla.svg" alt="Vanilla Theme">
+  </div>
+  <div class="code-container hidden">
+    <div class="code-header">
+      <span>Generated D2 Code - Vanilla Theme</span>
+      <button class="copy-button">Copy</button>
+    </div>
+    <pre><code>'$(cat build/boxes-vanilla.d2 | escape_html)'</code></pre>
+  </div>
+</div>'
 
-<img src="build/boxes-default.svg" width="50%">
-<details>
-<summary>Generated D2 Code</summary>
+# Replace placeholders in template
+HTML="${TEMPLATE//\{\{TITLE\}\}/$TITLE}"
+HTML="${HTML//\{\{DESCRIPTION\}\}/$DESCRIPTION}"
+HTML="${HTML//\{\{ORIGINAL_DIAGRAM\}\}/$ORIGINAL_DIAGRAM}"
+HTML="${HTML//\{\{ORIGINAL_CODE\}\}/$ORIGINAL_CODE}"
+HTML="${HTML//\{\{TABS\}\}/$TABS}"
+HTML="${HTML//\{\{TAB_CONTENTS\}\}/$TAB_CONTENTS}"
 
-```d2
-EOF
+# Write the HTML file
+echo "$HTML" > index.html
 
-cat build/boxes-default.d2 >> README.md
-
-cat >> README.md << 'EOF'
-```
-</details>
-
-### Simple Arrows
-
-With `--arrows simple`, all communication is represented as bidirectional connections:
-
-<img src="build/boxes-simple.svg" width="50%">
-<details>
-<summary>Generated D2 Code</summary>
-
-```d2
-EOF
-
-cat build/boxes-simple.d2 >> README.md
-
-cat >> README.md << 'EOF'
-```
-</details>
-
-### Horizontal Layout
-
-With `--layout horizontal`, the diagram flows left-to-right:
-
-<img src="build/boxes-horizontal.svg" width="50%">
-<details>
-<summary>Generated D2 Code</summary>
-
-```d2
-EOF
-
-cat build/boxes-horizontal.d2 >> README.md
-
-cat >> README.md << 'EOF'
-```
-</details>
-
-### Vanilla Theme
-
-With `--theme vanilla-nitro` for a different visual style:
-
-<img src="build/boxes-vanilla.svg" width="50%">
-<details>
-<summary>Generated D2 Code</summary>
-
-```d2
-EOF
-
-cat build/boxes-vanilla.d2 >> README.md
-
-cat >> README.md << 'EOF'
-```
-</details>
-EOF
-
-echo "Done! Check README.md for the results."
+echo "Done! Open index.html to view the sample."

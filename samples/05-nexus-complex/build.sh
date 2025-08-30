@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+# Source common functions
+source ../assets/build-common.sh
+
 # Create build directory for artifacts
 mkdir -p build
 
@@ -40,171 +43,65 @@ echo "Generating D2 code samples..."
 ../../seq2boxes --layout horizontal nexus-a2a.d2 nexus-mcp.d2 > build/boxes-combined-horizontal.d2
 ../../seq2boxes --theme flagship-terrastruct nexus-a2a.d2 nexus-mcp.d2 > build/boxes-combined-flagship.d2
 
-# Generate README.md
-echo "Generating README.md..."
-cat > README.md << 'EOF'
-# Sample 05: Complex Nexus Architecture
+# Generate index.html
+echo "Generating index.html..."
 
-This example uses real-world Nexus sequence diagrams to demonstrate seq2boxes on complex, production-like scenarios.
+# For this sample, we'll show both original diagrams
+ORIGINAL_DIAGRAMS='<div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+  <div style="text-align: center;">
+    <h4 style="margin: 0 0 0.5rem 0;">Nexus A2A (Async-to-Async)</h4>
+    <img src="build/nexus-a2a.svg" alt="Nexus A2A" style="max-width: 400px;">
+  </div>
+  <div style="text-align: center;">
+    <h4 style="margin: 0 0 0.5rem 0;">Nexus MCP (Model Context Protocol)</h4>
+    <img src="build/nexus-mcp.svg" alt="Nexus MCP" style="max-width: 400px;">
+  </div>
+</div>'
 
-## Input Sequence Diagrams
+# Combine both D2 files for the code view
+cat > build/combined-original.d2 << EOF
+// Nexus A2A (Async-to-Async)
+$(cat nexus-a2a.d2)
 
-### Nexus A2A (Async-to-Async)
-
-<img src="build/nexus-a2a.svg" width="50%">
-<details>
-<summary>D2 Code</summary>
-
-```d2
+// Nexus MCP (Model Context Protocol)
+$(cat nexus-mcp.d2)
 EOF
 
-cat nexus-a2a.d2 >> README.md
+# Read template
+TEMPLATE=$(<../assets/template.html)
 
-cat >> README.md << 'EOF'
-```
-</details>
+# Set title and description
+TITLE="Sample 05: Complex Nexus Architecture"
+DESCRIPTION="Real-world Nexus sequence diagrams demonstrating seq2boxes on complex, production-like scenarios"
 
-### Nexus MCP (Model Context Protocol)
+# Prepare original code
+ORIGINAL_CODE=$(cat build/combined-original.d2 | escape_html)
 
-<img src="build/nexus-mcp.svg" width="50%">
-<details>
-<summary>D2 Code</summary>
+# Build tabs
+TABS=$(make_tab "a2a" "A2A Only" "true")$'\n'
+TABS+=$(make_tab "mcp" "MCP Only" "false")$'\n'
+TABS+=$(make_tab "combined" "Combined" "false")$'\n'
+TABS+=$(make_tab "simple" "Simple Arrows" "false")$'\n'
+TABS+=$(make_tab "horizontal" "Horizontal" "false")$'\n'
+TABS+=$(make_tab "flagship" "Flagship Theme" "false")
 
-```d2
-EOF
+# Build tab contents
+TAB_CONTENTS=$(make_tab_content "a2a" "A2A Boxes and Arrows" "build/boxes-a2a.svg" "build/boxes-a2a.d2" "true")$'\n\n'
+TAB_CONTENTS+=$(make_tab_content "mcp" "MCP Boxes and Arrows" "build/boxes-mcp.svg" "build/boxes-mcp.d2" "false")$'\n\n'
+TAB_CONTENTS+=$(make_tab_content "combined" "Combined Default" "build/boxes-combined.svg" "build/boxes-combined.d2" "false")$'\n\n'
+TAB_CONTENTS+=$(make_tab_content "simple" "Combined Simple Arrows" "build/boxes-combined-simple.svg" "build/boxes-combined-simple.d2" "false")$'\n\n'
+TAB_CONTENTS+=$(make_tab_content "horizontal" "Combined Horizontal" "build/boxes-combined-horizontal.svg" "build/boxes-combined-horizontal.d2" "false")$'\n\n'
+TAB_CONTENTS+=$(make_tab_content "flagship" "Flagship Theme" "build/boxes-combined-flagship.svg" "build/boxes-combined-flagship.d2" "false")
 
-cat nexus-mcp.d2 >> README.md
+# Replace placeholders in template
+HTML="${TEMPLATE//\{\{TITLE\}\}/$TITLE}"
+HTML="${HTML//\{\{DESCRIPTION\}\}/$DESCRIPTION}"
+HTML="${HTML//\{\{ORIGINAL_DIAGRAM\}\}/$ORIGINAL_DIAGRAMS}"
+HTML="${HTML//\{\{ORIGINAL_CODE\}\}/$ORIGINAL_CODE}"
+HTML="${HTML//\{\{TABS\}\}/$TABS}"
+HTML="${HTML//\{\{TAB_CONTENTS\}\}/$TAB_CONTENTS}"
 
-cat >> README.md << 'EOF'
-```
-</details>
+# Write the HTML file
+echo "$HTML" > index.html
 
-## Individual Transformations
-
-### A2A as Boxes and Arrows
-
-<img src="build/boxes-a2a.svg" width="50%">
-<details>
-<summary>Generated D2 Code</summary>
-
-```d2
-EOF
-
-cat build/boxes-a2a.d2 >> README.md
-
-cat >> README.md << 'EOF'
-```
-</details>
-
-### MCP as Boxes and Arrows
-
-<img src="build/boxes-mcp.svg" width="50%">
-<details>
-<summary>Generated D2 Code</summary>
-
-```d2
-EOF
-
-cat build/boxes-mcp.d2 >> README.md
-
-cat >> README.md << 'EOF'
-```
-</details>
-
-## Combined Transformations
-
-### Default Combined (Detailed Arrows)
-
-The combined diagram shows how both flows interact with shared actors (Agent, Caller Namespace, Handler Namespace, and Nexus Gateway):
-
-<img src="build/boxes-combined.svg" width="50%">
-<details>
-<summary>Generated D2 Code</summary>
-
-```d2
-EOF
-
-cat build/boxes-combined.d2 >> README.md
-
-cat >> README.md << 'EOF'
-```
-</details>
-
-### Simple Arrows (System Overview)
-
-With `--arrows simple`, we get a clear view of the overall system connectivity:
-
-<img src="build/boxes-combined-simple.svg" width="50%">
-<details>
-<summary>Generated D2 Code</summary>
-
-```d2
-EOF
-
-cat build/boxes-combined-simple.d2 >> README.md
-
-cat >> README.md << 'EOF'
-```
-</details>
-
-This view clearly shows:
-- The Agent connects through different proxies (a2a Proxy vs MCP Proxy)
-- Both flows pass through the same core infrastructure
-- The bidirectional nature of all communications
-
-### Horizontal Layout
-
-With `--layout horizontal` for a left-to-right flow:
-
-<img src="build/boxes-combined-horizontal.svg" width="50%">
-<details>
-<summary>Generated D2 Code</summary>
-
-```d2
-EOF
-
-cat build/boxes-combined-horizontal.d2 >> README.md
-
-cat >> README.md << 'EOF'
-```
-</details>
-
-### Flagship Theme
-
-With `--theme flagship-terrastruct` for Terrastruct's signature look:
-
-<img src="build/boxes-combined-flagship.svg" width="50%">
-<details>
-<summary>Generated D2 Code</summary>
-
-```d2
-EOF
-
-cat build/boxes-combined-flagship.d2 >> README.md
-
-cat >> README.md << 'EOF'
-```
-</details>
-
-## Verbose Output
-
-When run with `--verbose`, the tool provides diagnostic information:
-
-```
-EOF
-
-cat build/verbose-output.txt >> README.md || echo "No verbose output available" >> README.md
-
-cat >> README.md << 'EOF'
-```
-
-## Key Features Demonstrated
-
-1. **Actor Alignment**: Common actors (Agent, Caller/Handler Namespaces, Nexus Gateway) are properly aligned across both diagrams
-2. **Message Grouping**: Messages from each source diagram are grouped in transparent containers
-3. **Index Management**: Message indices are offset (1-14 for a2a, 101-111 for mcp)
-4. **Label Handling**: Complex labels with special characters are properly escaped
-5. **Theme Support**: Various D2 themes work seamlessly with the generated output
-EOF
-
-echo "Done! Check README.md for the results."
+echo "Done! Open index.html to view the sample."

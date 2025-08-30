@@ -30,95 +30,93 @@ echo "Saving D2 code outputs..."
 ../../seq2boxes --layout horizontal sequence.d2 > build/boxes-horizontal.d2
 ../../seq2boxes --theme dark-mauve sequence.d2 > build/boxes-dark.d2
 
-# Generate README.md
-echo "Generating README.md..."
-cat > README.md << 'EOF'
-# Sample 01: Minimal Example
+# Function to escape HTML special characters
+escape_html() {
+    sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g; s/"/\&quot;/g; s/'"'"'/\&#39;/g'
+}
 
-This is the simplest possible example with just two actors exchanging messages.
+# Generate index.html
+echo "Generating index.html..."
 
-## Input Sequence Diagram
+# Read template
+TEMPLATE=$(<../assets/template.html)
 
-<img src="build/sequence.svg" width="50%">
-<details>
-<summary>D2 Code</summary>
+# Set title and description
+TITLE="Sample 01: Minimal Example"
+DESCRIPTION="The simplest possible example with just two actors exchanging messages"
 
-```d2
-EOF
+# Prepare original diagram and code
+ORIGINAL_DIAGRAM='<img src="build/sequence.svg" alt="Original Sequence Diagram">'
+ORIGINAL_CODE=$(cat sequence.d2 | escape_html)
 
-cat sequence.d2 >> README.md
+# Build tabs
+TABS='<button class="tab active" data-target="tab-default">Default</button>
+<button class="tab" data-target="tab-simple">Simple Arrows</button>
+<button class="tab" data-target="tab-horizontal">Horizontal</button>
+<button class="tab" data-target="tab-dark">Dark Theme</button>'
 
-cat >> README.md << 'EOF'
-```
-</details>
+# Build tab contents
+TAB_CONTENTS='<div id="tab-default" class="tab-content">
+  <div class="diagram-container">
+    <img src="build/boxes-default.svg" alt="Default Transformation">
+  </div>
+  <div class="code-container hidden">
+    <div class="code-header">
+      <span>Generated D2 Code - Default</span>
+      <button class="copy-button">Copy</button>
+    </div>
+    <pre><code>'$(cat build/boxes-default.d2 | escape_html)'</code></pre>
+  </div>
+</div>
 
-## Transformations
+<div id="tab-simple" class="tab-content hidden">
+  <div class="diagram-container">
+    <img src="build/boxes-simple.svg" alt="Simple Arrows">
+  </div>
+  <div class="code-container hidden">
+    <div class="code-header">
+      <span>Generated D2 Code - Simple Arrows</span>
+      <button class="copy-button">Copy</button>
+    </div>
+    <pre><code>'$(cat build/boxes-simple.d2 | escape_html)'</code></pre>
+  </div>
+</div>
 
-### Default (Detailed Arrows, Vertical Layout)
+<div id="tab-horizontal" class="tab-content hidden">
+  <div class="diagram-container">
+    <img src="build/boxes-horizontal.svg" alt="Horizontal Layout">
+  </div>
+  <div class="code-container hidden">
+    <div class="code-header">
+      <span>Generated D2 Code - Horizontal Layout</span>
+      <button class="copy-button">Copy</button>
+    </div>
+    <pre><code>'$(cat build/boxes-horizontal.d2 | escape_html)'</code></pre>
+  </div>
+</div>
 
-<img src="build/boxes-default.svg" width="50%">
-<details>
-<summary>Generated D2 Code</summary>
+<div id="tab-dark" class="tab-content hidden">
+  <div class="diagram-container">
+    <img src="build/boxes-dark.svg" alt="Dark Theme">
+  </div>
+  <div class="code-container hidden">
+    <div class="code-header">
+      <span>Generated D2 Code - Dark Theme</span>
+      <button class="copy-button">Copy</button>
+    </div>
+    <pre><code>'$(cat build/boxes-dark.d2 | escape_html)'</code></pre>
+  </div>
+</div>'
 
-```d2
-EOF
+# Replace placeholders in template
+HTML="${TEMPLATE//\{\{TITLE\}\}/$TITLE}"
+HTML="${HTML//\{\{DESCRIPTION\}\}/$DESCRIPTION}"
+HTML="${HTML//\{\{ORIGINAL_DIAGRAM\}\}/$ORIGINAL_DIAGRAM}"
+HTML="${HTML//\{\{ORIGINAL_CODE\}\}/$ORIGINAL_CODE}"
+HTML="${HTML//\{\{TABS\}\}/$TABS}"
+HTML="${HTML//\{\{TAB_CONTENTS\}\}/$TAB_CONTENTS}"
 
-cat build/boxes-default.d2 >> README.md
+# Write the HTML file
+echo "$HTML" > index.html
 
-cat >> README.md << 'EOF'
-```
-</details>
-
-### Simple Arrows
-
-With `--arrows simple`, bidirectional arrows are used:
-
-<img src="build/boxes-simple.svg" width="50%">
-<details>
-<summary>Generated D2 Code</summary>
-
-```d2
-EOF
-
-cat build/boxes-simple.d2 >> README.md
-
-cat >> README.md << 'EOF'
-```
-</details>
-
-### Horizontal Layout
-
-With `--layout horizontal`:
-
-<img src="build/boxes-horizontal.svg" width="50%">
-<details>
-<summary>Generated D2 Code</summary>
-
-```d2
-EOF
-
-cat build/boxes-horizontal.d2 >> README.md
-
-cat >> README.md << 'EOF'
-```
-</details>
-
-### Dark Theme
-
-With `--theme dark-mauve`:
-
-<img src="build/boxes-dark.svg" width="50%">
-<details>
-<summary>Generated D2 Code</summary>
-
-```d2
-EOF
-
-cat build/boxes-dark.d2 >> README.md
-
-cat >> README.md << 'EOF'
-```
-</details>
-EOF
-
-echo "Done! Check README.md for the results."
+echo "Done! Open index.html to view the sample."

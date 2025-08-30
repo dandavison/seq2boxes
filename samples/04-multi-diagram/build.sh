@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+# Source common functions
+source ../assets/build-common.sh
+
 # Create build directory for artifacts
 mkdir -p build
 
@@ -34,138 +37,63 @@ echo "Saving D2 code outputs..."
 ../../seq2boxes frontend-flow.d2 > build/boxes-frontend-only.d2
 ../../seq2boxes backend-flow.d2 > build/boxes-backend-only.d2
 
-# Generate README.md
-echo "Generating README.md..."
-cat > README.md << 'EOF'
-# Sample 04: Multiple Diagrams with Shared Actors
+# Generate index.html with special handling for multiple diagrams
+echo "Generating index.html..."
 
-This example demonstrates how seq2boxes handles multiple input sequence diagrams that share common actors (API Server and Cache Service).
+# For this sample, we'll show both original diagrams
+ORIGINAL_DIAGRAMS='<div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+  <div style="text-align: center;">
+    <h4 style="margin: 0 0 0.5rem 0;">Frontend Flow</h4>
+    <img src="build/frontend-flow.svg" alt="Frontend Flow" style="max-width: 300px;">
+  </div>
+  <div style="text-align: center;">
+    <h4 style="margin: 0 0 0.5rem 0;">Backend Flow</h4>
+    <img src="build/backend-flow.svg" alt="Backend Flow" style="max-width: 300px;">
+  </div>
+</div>'
 
-## Input Sequence Diagrams
+# Combine both D2 files for the code view
+cat > build/combined-original.d2 << EOF
+// Frontend Flow
+$(cat frontend-flow.d2)
 
-### Frontend Flow
-
-<img src="build/frontend-flow.svg" width="50%">
-<details>
-<summary>D2 Code</summary>
-
-```d2
+// Backend Flow
+$(cat backend-flow.d2)
 EOF
 
-cat frontend-flow.d2 >> README.md
+# Read template
+TEMPLATE=$(<../assets/template.html)
 
-cat >> README.md << 'EOF'
-```
-</details>
+# Set title and description
+TITLE="Sample 04: Multiple Diagrams with Shared Actors"
+DESCRIPTION="Demonstrates how seq2boxes handles multiple input sequence diagrams that share common actors"
 
-### Backend Flow
+# Prepare original code
+ORIGINAL_CODE=$(cat build/combined-original.d2 | escape_html)
 
-<img src="build/backend-flow.svg" width="50%">
-<details>
-<summary>D2 Code</summary>
+# Build tabs
+TABS=$(make_tab "combined" "Combined" "true")$'\n'
+TABS+=$(make_tab "simple" "Simple Arrows" "false")$'\n'
+TABS+=$(make_tab "horizontal" "Horizontal" "false")$'\n'
+TABS+=$(make_tab "frontend" "Frontend Only" "false")$'\n'
+TABS+=$(make_tab "backend" "Backend Only" "false")
 
-```d2
-EOF
+# Build tab contents
+TAB_CONTENTS=$(make_tab_content "combined" "Combined Default" "build/boxes-combined.svg" "build/boxes-combined.d2" "true")$'\n\n'
+TAB_CONTENTS+=$(make_tab_content "simple" "Combined Simple Arrows" "build/boxes-combined-simple.svg" "build/boxes-combined-simple.d2" "false")$'\n\n'
+TAB_CONTENTS+=$(make_tab_content "horizontal" "Combined Horizontal" "build/boxes-combined-horizontal.svg" "build/boxes-combined-horizontal.d2" "false")$'\n\n'
+TAB_CONTENTS+=$(make_tab_content "frontend" "Frontend Only" "build/boxes-frontend-only.svg" "build/boxes-frontend-only.d2" "false")$'\n\n'
+TAB_CONTENTS+=$(make_tab_content "backend" "Backend Only" "build/boxes-backend-only.svg" "build/boxes-backend-only.d2" "false")
 
-cat backend-flow.d2 >> README.md
+# Replace placeholders in template
+HTML="${TEMPLATE//\{\{TITLE\}\}/$TITLE}"
+HTML="${HTML//\{\{DESCRIPTION\}\}/$DESCRIPTION}"
+HTML="${HTML//\{\{ORIGINAL_DIAGRAM\}\}/$ORIGINAL_DIAGRAMS}"
+HTML="${HTML//\{\{ORIGINAL_CODE\}\}/$ORIGINAL_CODE}"
+HTML="${HTML//\{\{TABS\}\}/$TABS}"
+HTML="${HTML//\{\{TAB_CONTENTS\}\}/$TAB_CONTENTS}"
 
-cat >> README.md << 'EOF'
-```
-</details>
+# Write the HTML file
+echo "$HTML" > index.html
 
-## Combined Transformation
-
-When multiple sequence diagrams are provided, seq2boxes:
-1. Validates that they share at least one common actor
-2. Aligns the common actors in the output
-3. Groups messages by their source diagram
-
-### Default Combined Output
-
-<img src="build/boxes-combined.svg" width="50%">
-<details>
-<summary>Generated D2 Code</summary>
-
-```d2
-EOF
-
-cat build/boxes-combined.d2 >> README.md
-
-cat >> README.md << 'EOF'
-```
-</details>
-
-### Simple Arrows (Combined)
-
-With `--arrows simple`, showing overall system connectivity:
-
-<img src="build/boxes-combined-simple.svg" width="50%">
-<details>
-<summary>Generated D2 Code</summary>
-
-```d2
-EOF
-
-cat build/boxes-combined-simple.d2 >> README.md
-
-cat >> README.md << 'EOF'
-```
-</details>
-
-### Horizontal Layout (Combined)
-
-With `--layout horizontal`:
-
-<img src="build/boxes-combined-horizontal.svg" width="50%">
-<details>
-<summary>Generated D2 Code</summary>
-
-```d2
-EOF
-
-cat build/boxes-combined-horizontal.d2 >> README.md
-
-cat >> README.md << 'EOF'
-```
-</details>
-
-## Individual Transformations
-
-For comparison, here are the diagrams transformed individually:
-
-### Frontend Only
-
-<img src="build/boxes-frontend-only.svg" width="50%">
-<details>
-<summary>Generated D2 Code</summary>
-
-```d2
-EOF
-
-cat build/boxes-frontend-only.d2 >> README.md
-
-cat >> README.md << 'EOF'
-```
-</details>
-
-### Backend Only
-
-<img src="build/boxes-backend-only.svg" width="50%">
-<details>
-<summary>Generated D2 Code</summary>
-
-```d2
-EOF
-
-cat build/boxes-backend-only.d2 >> README.md
-
-cat >> README.md << 'EOF'
-```
-</details>
-
-## Note on Multi-Diagram Structure
-
-The combined output creates transparent containers for each diagram's messages. Message indices are offset (1-6 for frontend, 101-108 for backend) to maintain uniqueness.
-EOF
-
-echo "Done! Check README.md for the results."
+echo "Done! Open index.html to view the sample."

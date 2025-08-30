@@ -1,4 +1,4 @@
-.PHONY: all build samples clean help
+.PHONY: all build samples clean serve help
 
 # Default target
 all: build samples
@@ -11,6 +11,7 @@ build:
 # Build all samples
 samples: build
 	@echo "Building all samples..."
+	@chmod +x samples/*/build.sh 2>/dev/null || true
 	@for dir in samples/*/; do \
 		if [ -f "$$dir/build.sh" ]; then \
 			echo "Building $$dir..."; \
@@ -18,6 +19,9 @@ samples: build
 		fi \
 	done
 	@echo "All samples built successfully!"
+	@echo ""
+	@echo "To view the samples, open samples/index.html in your browser."
+	@echo "For local development, you can run 'make serve' to start a local server."
 
 # Clean build artifacts
 clean:
@@ -27,9 +31,16 @@ clean:
 		if [ -d "$$dir/build" ]; then \
 			echo "Cleaning $$dir/build..."; \
 			rm -rf "$$dir/build"; \
-		fi \
+		fi; \
+		rm -f "$$dir/index.html" 2>/dev/null || true; \
 	done
 	@echo "Clean complete."
+
+# Serve samples locally
+serve:
+	@echo "Starting local server at http://localhost:8000/samples/"
+	@echo "Press Ctrl+C to stop the server."
+	@cd samples && python3 -m http.server 8000
 
 # Help target
 help:
@@ -38,4 +49,5 @@ help:
 	@echo "  make build   - Build only the seq2boxes tool"
 	@echo "  make samples - Build all sample outputs"
 	@echo "  make clean   - Remove all build artifacts"
+	@echo "  make serve   - Start local server to view samples"
 	@echo "  make help    - Show this help message"

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{TITLE}} - seq2boxes</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+  <header class="header">
+    <h1>{{TITLE}}</h1>
+    <div class="subtitle">{{DESCRIPTION}}</div>
+  </header>
+  
+  <div class="container">
+    <!-- Left Panel: Original Sequence Diagram -->
+    <div class="panel left">
+      <div class="panel-header">
+        <h2 class="panel-title">Original Sequence Diagram</h2>
+        <div class="toggle-switch">
+          <span>Diagram</span>
+          <label class="switch">
+            <input type="checkbox" class="view-toggle">
+            <span class="slider"></span>
+          </label>
+          <span>Code</span>
+        </div>
+      </div>
+      
+      <div class="content">
+        <div class="diagram-container">
+          {{ORIGINAL_DIAGRAM}}
+        </div>
+        <div class="code-container hidden">
+          <div class="code-header">
+            <span>D2 Sequence Diagram</span>
+            <button class="copy-button">Copy</button>
+          </div>
+          <pre><code>{{ORIGINAL_CODE}}</code></pre>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Right Panel: Transformations -->
+    <div class="panel right">
+      <div class="panel-header">
+        <h2 class="panel-title">Transformations</h2>
+        <div class="toggle-switch">
+          <span>Diagram</span>
+          <label class="switch">
+            <input type="checkbox" class="view-toggle">
+            <span class="slider"></span>
+          </label>
+          <span>Code</span>
+        </div>
+      </div>
+      
+      <div class="tabs">
+        {{TABS}}
+      </div>
+      
+      <div class="tab-contents">
+        {{TAB_CONTENTS}}
+      </div>
+    </div>
+  </div>
+  
+  <script src="../assets/script.js"></script>
+</body>
+</html>
