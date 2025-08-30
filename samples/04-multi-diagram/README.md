@@ -7,7 +7,6 @@ This example demonstrates how seq2boxes handles multiple input sequence diagrams
 ### Frontend Flow
 
 <img src="build/frontend-flow.svg" width="50%">
-
 <details>
 <summary>D2 Code</summary>
 
@@ -30,7 +29,6 @@ frontend -> browser: Render Page
 ### Backend Flow
 
 <img src="build/backend-flow.svg" width="50%">
-
 <details>
 <summary>D2 Code</summary>
 
@@ -63,7 +61,6 @@ When multiple sequence diagrams are provided, seq2boxes:
 ### Default Combined Output
 
 <img src="build/boxes-combined.svg" width="50%">
-
 <details>
 <summary>Generated D2 Code</summary>
 
@@ -137,7 +134,6 @@ diagram_backend_flow: {
 With `--arrows simple`, showing overall system connectivity:
 
 <img src="build/boxes-combined-simple.svg" width="50%">
-
 <details>
 <summary>Generated D2 Code</summary>
 
@@ -175,7 +171,6 @@ diagram_backend_flow: {
 With `--layout horizontal`:
 
 <img src="build/boxes-combined-horizontal.svg" width="50%">
-
 <details>
 <summary>Generated D2 Code</summary>
 
@@ -253,7 +248,6 @@ For comparison, here are the diagrams transformed individually:
 ### Frontend Only
 
 <img src="build/boxes-frontend-only.svg" width="50%">
-
 <details>
 <summary>Generated D2 Code</summary>
 
@@ -288,7 +282,6 @@ vars: {
 ### Backend Only
 
 <img src="build/boxes-backend-only.svg" width="50%">
-
 <details>
 <summary>Generated D2 Code</summary>
 

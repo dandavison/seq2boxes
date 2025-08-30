@@ -40,7 +40,6 @@ This is the simplest possible example with just two actors exchanging messages.
 ## Input Sequence Diagram
 
 <img src="build/sequence.svg" width="50%">
-
 <details>
 <summary>D2 Code</summary>
 
@@ -58,7 +57,6 @@ cat >> README.md << 'EOF'
 ### Default (Detailed Arrows, Vertical Layout)
 
 <img src="build/boxes-default.svg" width="50%">
-
 <details>
 <summary>Generated D2 Code</summary>
 
@@ -76,7 +74,6 @@ cat >> README.md << 'EOF'
 With `--arrows simple`, bidirectional arrows are used:
 
 <img src="build/boxes-simple.svg" width="50%">
-
 <details>
 <summary>Generated D2 Code</summary>
 
@@ -94,7 +91,6 @@ cat >> README.md << 'EOF'
 With `--layout horizontal`:
 
 <img src="build/boxes-horizontal.svg" width="50%">
-
 <details>
 <summary>Generated D2 Code</summary>
 
@@ -112,7 +108,6 @@ cat >> README.md << 'EOF'
 With `--theme dark-mauve`:
 
 <img src="build/boxes-dark.svg" width="50%">
-
 <details>
 <summary>Generated D2 Code</summary>
 

@@ -40,7 +40,6 @@ This example shows a typical authentication flow with four actors: User, Web App
 ## Input Sequence Diagram
 
 <img src="build/auth-flow.svg" width="50%">
-
 <details>
 <summary>D2 Code</summary>
 
@@ -60,7 +59,6 @@ cat >> README.md << 'EOF'
 The default transformation shows numbered arrows with different colors for outward (blue) and return (green) messages:
 
 <img src="build/boxes-default.svg" width="50%">
-
 <details>
 <summary>Generated D2 Code</summary>
 
@@ -78,7 +76,6 @@ cat >> README.md << 'EOF'
 With `--arrows simple`, all communication is represented as bidirectional connections:
 
 <img src="build/boxes-simple.svg" width="50%">
-
 <details>
 <summary>Generated D2 Code</summary>
 
@@ -96,7 +93,6 @@ cat >> README.md << 'EOF'
 With `--layout horizontal`, the diagram flows left-to-right:
 
 <img src="build/boxes-horizontal.svg" width="50%">
-
 <details>
 <summary>Generated D2 Code</summary>
 
@@ -114,7 +110,6 @@ cat >> README.md << 'EOF'
 With `--theme vanilla-nitro` for a different visual style:
 
 <img src="build/boxes-vanilla.svg" width="50%">
-
 <details>
 <summary>Generated D2 Code</summary>
 

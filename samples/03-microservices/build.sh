@@ -40,7 +40,6 @@ This example demonstrates a complex microservices architecture for order process
 ## Input Sequence Diagram
 
 <img src="build/order-processing.svg" width="50%">
-
 <details>
 <summary>D2 Code</summary>
 
@@ -60,7 +59,6 @@ cat >> README.md << 'EOF'
 The default transformation preserves all message details with numbered, colored arrows:
 
 <img src="build/boxes-default.svg" width="50%">
-
 <details>
 <summary>Generated D2 Code</summary>
 
@@ -78,7 +76,6 @@ cat >> README.md << 'EOF'
 With `--arrows simple`, we get a high-level view of which services communicate:
 
 <img src="build/boxes-simple.svg" width="50%">
-
 <details>
 <summary>Generated D2 Code</summary>
 
@@ -98,7 +95,6 @@ This view is particularly useful for understanding the overall system connectivi
 With `--layout horizontal` for a left-to-right flow:
 
 <img src="build/boxes-horizontal.svg" width="50%">
-
 <details>
 <summary>Generated D2 Code</summary>
 
@@ -116,7 +112,6 @@ cat >> README.md << 'EOF'
 With `--theme cool-classics` for a different aesthetic:
 
 <img src="build/boxes-cool.svg" width="50%">
-
 <details>
 <summary>Generated D2 Code</summary>
 

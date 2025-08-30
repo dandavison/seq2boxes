@@ -7,7 +7,6 @@ This example uses real-world Nexus sequence diagrams to demonstrate seq2boxes on
 ### Nexus A2A (Async-to-Async)
 
 <img src="build/nexus-a2a.svg" width="50%">
-
 <details>
 <summary>D2 Code</summary>
 
@@ -50,7 +49,6 @@ a2a-proxy -> agent: Task\n(completed)
 ### Nexus MCP (Model Context Protocol)
 
 <img src="build/nexus-mcp.svg" width="50%">
-
 <details>
 <summary>D2 Code</summary>
 
@@ -93,7 +91,6 @@ mcp-proxy -> agent: tool result
 ### A2A as Boxes and Arrows
 
 <img src="build/boxes-a2a.svg" width="50%">
-
 <details>
 <summary>Generated D2 Code</summary>
 
@@ -157,7 +154,6 @@ vars: {
 ### MCP as Boxes and Arrows
 
 <img src="build/boxes-mcp.svg" width="50%">
-
 <details>
 <summary>Generated D2 Code</summary>
 
@@ -219,7 +215,6 @@ vars: {
 The combined diagram shows how both flows interact with shared actors (Agent, Caller Namespace, Handler Namespace, and Nexus Gateway):
 
 <img src="build/boxes-combined.svg" width="50%">
-
 <details>
 <summary>Generated D2 Code</summary>
 
@@ -338,7 +333,6 @@ diagram_nexus_mcp: {
 With `--arrows simple`, we get a clear view of the overall system connectivity:
 
 <img src="build/boxes-combined-simple.svg" width="50%">
-
 <details>
 <summary>Generated D2 Code</summary>
 
@@ -382,7 +376,6 @@ This view clearly shows:
 With `--layout horizontal` for a left-to-right flow:
 
 <img src="build/boxes-combined-horizontal.svg" width="50%">
-
 <details>
 <summary>Generated D2 Code</summary>
 
@@ -503,7 +496,6 @@ diagram_nexus_mcp: {
 With `--theme flagship-terrastruct` for Terrastruct's signature look:
 
 <img src="build/boxes-combined-flagship.svg" width="50%">
-
 <details>
 <summary>Generated D2 Code</summary>
 
