@@ -9,10 +9,10 @@ direction: right
 "Agent" -> "MCP Proxy": "1. tools/call" {
   style.stroke: "#2196f3"
 }
-"MCP Proxy" -> "Caller Namespace": "2. nexus Start\n/service/operation" {
+"MCP Proxy" -> "Caller Namespace": "2. nexus Start /service/operation" {
   style.stroke: "#2196f3"
 }
-"Caller Namespace" -> "Handler Namespace": "3. nexus Start\n/service/operation" {
+"Caller Namespace" -> "Handler Namespace": "3. nexus Start /service/operation" {
   style.stroke: "#2196f3"
 }
 "Handler Namespace" -> "Nexus Gateway": "4. nexus task" {
@@ -33,14 +33,14 @@ direction: right
   style.stroke: "#4caf50"
   style.stroke-width: 2
 }
-"MCP Proxy" -> "Caller Namespace": "9. nexus Get\n/service/operation\n(long poll)" {
+"MCP Proxy" -> "Caller Namespace": "9. nexus Get /service/operation (long poll)" {
   style.stroke: "#2196f3"
 }
 "Handler Namespace" -> "Caller Namespace": "10. nexus callback" {
   style.stroke: "#4caf50"
   style.stroke-width: 2
 }
-"Caller Namespace" -> "MCP Proxy": "11. long poll\nreleased" {
+"Caller Namespace" -> "MCP Proxy": "11. long poll released" {
   style.stroke: "#2196f3"
 }
 "MCP Proxy" -> "Agent": "12. tool result" {

@@ -368,10 +368,11 @@ func formatActorRef(actorID string) string {
 
 func formatMessageLabel(msg Message) string {
 	// Clean up message label and add sequence number
-	// Escape newlines and quotes for D2 edge labels
+	// Escape backslashes and quotes for D2 edge labels
 	label := strings.ReplaceAll(msg.Label, "\\", "\\\\")
 	label = strings.ReplaceAll(label, "\"", "\\\"")
-	label = strings.ReplaceAll(label, "\n", "\\n")
+	// Replace newlines with spaces for edge labels - D2 doesn't support multiline edge labels well
+	label = strings.ReplaceAll(label, "\n", " ")
 	return fmt.Sprintf("%d. %s", msg.Index, label)
 }
 

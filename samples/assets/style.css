@@ -209,6 +209,17 @@ input:checked + .slider:before {
   display: none;
 }
 
+/* Ensure original tab uses full height */
+#tab-original {
+  padding: 1rem;
+}
+
+#tab-original .diagram-container {
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+}
+
 /* Diagram and Code Containers */
 .diagram-container {
   display: flex;
@@ -221,6 +232,54 @@ input:checked + .slider:before {
   flex: 1;
   min-height: 400px;
   position: relative;
+}
+
+/* Special handling for original tab diagrams */
+#tab-original .diagram-container {
+  min-height: 600px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 1rem;
+}
+
+#tab-original .diagram-container img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: calc(100vh - 300px); /* Account for navbar, tabs, etc */
+  object-fit: contain;
+}
+
+/* Special handling for multi-diagram displays in original tab */
+#tab-original .diagram-container > div {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+#tab-original .diagram-container > div > div {
+  flex: 1;
+  min-width: 400px;
+  max-width: calc(50% - 1rem);
+  text-align: center;
+}
+
+#tab-original .diagram-container > div h4 {
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+#tab-original .diagram-container > div img {
+  width: 100%;
+  height: auto;
+  max-height: calc(100vh - 350px);
+  object-fit: contain;
 }
 
 .diagram-container img {
@@ -487,6 +546,15 @@ code {
   
   .diagram-container {
     padding: 1rem;
+  }
+  
+  #tab-original .diagram-container > div {
+    flex-direction: column;
+  }
+  
+  #tab-original .diagram-container > div > div {
+    max-width: 100%;
+    min-width: auto;
   }
   
   .modal-content {

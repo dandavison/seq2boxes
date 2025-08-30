@@ -18,13 +18,14 @@ make_tab() {
     fi
 }
 
-# Function to generate tab content
-make_tab_content() {
+# Function to generate tab content with command info
+make_tab_content_with_cmd() {
     local id="$1"
     local label="$2"
     local svg_file="$3"
     local d2_file="$4"
-    local active="$5"
+    local command="$5"
+    local active="$6"
     
     local hidden=""
     if [ "$active" != "true" ]; then
@@ -32,6 +33,7 @@ make_tab_content() {
     fi
     
     local d2_content=$(cat "$d2_file" | escape_html)
+    local cmd_escaped=$(echo "$command" | escape_html)
     
     cat << EOF
 <div id="tab-$id" class="tab-content$hidden">
@@ -43,10 +45,24 @@ make_tab_content() {
       <span>Generated D2 Code - $label</span>
       <button class="copy-button">Copy</button>
     </div>
-    <pre><code>$d2_content</code></pre>
+    <pre><code># Command: $cmd_escaped
+
+$d2_content</code></pre>
   </div>
 </div>
 EOF
+}
+
+# Legacy function for backward compatibility
+make_tab_content() {
+    local id="$1"
+    local label="$2"
+    local svg_file="$3"
+    local d2_file="$4"
+    local active="$5"
+    
+    # Call new function with empty command
+    make_tab_content_with_cmd "$id" "$label" "$svg_file" "$d2_file" "" "$active"
 }
 
 # Function to generate the full HTML page
@@ -86,6 +102,55 @@ generate_html() {
         
         tabs+=$'\n'$(make_tab "$tab_id" "$tab_label" "false")
         tab_contents+=$'\n\n'$(make_tab_content "$tab_id" "$tab_label" "$svg_file" "$d2_file" "false")
+    done
+    
+    # Replace placeholders in template
+    local html="${template//\{\{TITLE\}\}/$title}"
+    html="${html//\{\{DESCRIPTION\}\}/$description}"
+    html="${html//\{\{TABS\}\}/$tabs}"
+    html="${html//\{\{TAB_CONTENTS\}\}/$tab_contents}"
+    
+    echo "$html"
+}
+
+# New function to generate HTML with command info
+generate_html_with_commands() {
+    local title="$1"
+    local description="$2"
+    local original_svg="$3"
+    local original_d2="$4"
+    shift 4
+    
+    # Read template
+    local template=$(<../assets/template.html)
+    
+    # Build tabs and contents - start with original as first tab
+    local tabs=$(make_tab "original" "Original" "true")
+    local original_code=$(cat "$original_d2" | escape_html)
+    local tab_contents="<div id=\"tab-original\" class=\"tab-content\">
+  <div class=\"diagram-container\">
+    <img src=\"$original_svg\" alt=\"Original Sequence Diagram\">
+  </div>
+  <div class=\"code-container hidden\">
+    <div class=\"code-header\">
+      <span>Original D2 Sequence Diagram</span>
+      <button class=\"copy-button\">Copy</button>
+    </div>
+    <pre><code>$original_code</code></pre>
+  </div>
+</div>"
+    
+    # Add transformation tabs with commands
+    while [ $# -gt 0 ]; do
+        local tab_id="$1"
+        local tab_label="$2"
+        local svg_file="$3"
+        local d2_file="$4"
+        local command="$5"
+        shift 5
+        
+        tabs+=$'\n'$(make_tab "$tab_id" "$tab_label" "false")
+        tab_contents+=$'\n\n'$(make_tab_content_with_cmd "$tab_id" "$tab_label" "$svg_file" "$d2_file" "$command" "false")
     done
     
     # Replace placeholders in template

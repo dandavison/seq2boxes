@@ -11,23 +11,19 @@ d2 auth-flow.d2 build/auth-flow.svg
 # Generate boxes and arrows diagrams with different options
 echo "Generating boxes and arrows transformations..."
 
-# Default (detailed arrows, vertical layout)
-../../seq2boxes --layout vertical auth-flow.d2 | d2 - build/boxes-default.svg
+# Default (horizontal layout with detailed arrows)
+../../seq2boxes auth-flow.d2 | d2 - build/boxes-default.svg
 
 # Simple arrows with horizontal layout
-../../seq2boxes --layout horizontal --arrows simple auth-flow.d2 | d2 - build/boxes-simple.svg
-
-# Horizontal layout
-../../seq2boxes --layout horizontal auth-flow.d2 | d2 - build/boxes-horizontal.svg
+../../seq2boxes --arrows simple auth-flow.d2 | d2 - build/boxes-simple.svg
 
 # With vanilla theme
 ../../seq2boxes --theme vanilla-nitro auth-flow.d2 | d2 - build/boxes-vanilla.svg
 
 # Save D2 code outputs
 echo "Saving D2 code outputs..."
-../../seq2boxes --layout vertical auth-flow.d2 > build/boxes-default.d2
-../../seq2boxes --layout horizontal --arrows simple auth-flow.d2 > build/boxes-simple.d2
-../../seq2boxes --layout horizontal auth-flow.d2 > build/boxes-horizontal.d2
+../../seq2boxes auth-flow.d2 > build/boxes-default.d2
+../../seq2boxes --arrows simple auth-flow.d2 > build/boxes-simple.d2
 ../../seq2boxes --theme vanilla-nitro auth-flow.d2 > build/boxes-vanilla.d2
 
 # Function to escape HTML special characters
@@ -47,10 +43,12 @@ DESCRIPTION="A typical authentication flow with four actors: User, Web Applicati
 
 # Build tabs - including original as first tab
 TABS='<button class="tab active" data-target="tab-original">Original</button>
-<button class="tab" data-target="tab-horizontal">Horizontal</button>
-<button class="tab" data-target="tab-default">Vertical</button>
+<button class="tab" data-target="tab-default">Default</button>
 <button class="tab" data-target="tab-simple">Simple Arrows</button>
 <button class="tab" data-target="tab-vanilla">Vanilla Theme</button>'
+
+# Source common functions
+source ../assets/build-common.sh
 
 # Build tab contents
 TAB_CONTENTS='<div id="tab-original" class="tab-content">
@@ -64,59 +62,13 @@ TAB_CONTENTS='<div id="tab-original" class="tab-content">
     </div>
     <pre><code>'$(cat auth-flow.d2 | escape_html)'</code></pre>
   </div>
-</div>
-
-<div id="tab-horizontal" class="tab-content hidden">
-  <div class="diagram-container">
-    <img src="build/boxes-horizontal.svg" alt="Horizontal Layout">
-  </div>
-  <div class="code-container hidden">
-    <div class="code-header">
-      <span>Generated D2 Code - Horizontal Layout</span>
-      <button class="copy-button">Copy</button>
-    </div>
-    <pre><code>'$(cat build/boxes-horizontal.d2 | escape_html)'</code></pre>
-  </div>
-</div>
-
-<div id="tab-default" class="tab-content hidden">
-  <div class="diagram-container">
-    <img src="build/boxes-default.svg" alt="Vertical Layout">
-  </div>
-  <div class="code-container hidden">
-    <div class="code-header">
-      <span>Generated D2 Code - Vertical Layout</span>
-      <button class="copy-button">Copy</button>
-    </div>
-    <pre><code>'$(cat build/boxes-default.d2 | escape_html)'</code></pre>
-  </div>
-</div>
-
-<div id="tab-simple" class="tab-content hidden">
-  <div class="diagram-container">
-    <img src="build/boxes-simple.svg" alt="Simple Arrows">
-  </div>
-  <div class="code-container hidden">
-    <div class="code-header">
-      <span>Generated D2 Code - Simple Arrows</span>
-      <button class="copy-button">Copy</button>
-    </div>
-    <pre><code>'$(cat build/boxes-simple.d2 | escape_html)'</code></pre>
-  </div>
-</div>
-
-<div id="tab-vanilla" class="tab-content hidden">
-  <div class="diagram-container">
-    <img src="build/boxes-vanilla.svg" alt="Vanilla Theme">
-  </div>
-  <div class="code-container hidden">
-    <div class="code-header">
-      <span>Generated D2 Code - Vanilla Theme</span>
-      <button class="copy-button">Copy</button>
-    </div>
-    <pre><code>'$(cat build/boxes-vanilla.d2 | escape_html)'</code></pre>
-  </div>
 </div>'
+
+TAB_CONTENTS+=$'\n\n'$(make_tab_content_with_cmd "default" "Default" "build/boxes-default.svg" "build/boxes-default.d2" "./seq2boxes auth-flow.d2" "false")
+
+TAB_CONTENTS+=$'\n\n'$(make_tab_content_with_cmd "simple" "Simple Arrows" "build/boxes-simple.svg" "build/boxes-simple.d2" "./seq2boxes --arrows simple auth-flow.d2" "false")
+
+TAB_CONTENTS+=$'\n\n'$(make_tab_content_with_cmd "vanilla" "Vanilla Theme" "build/boxes-vanilla.svg" "build/boxes-vanilla.d2" "./seq2boxes --theme vanilla-nitro auth-flow.d2" "false")
 
 # Replace placeholders in template
 HTML="${TEMPLATE//\{\{TITLE\}\}/$TITLE}"
