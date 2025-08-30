@@ -1,0 +1,25 @@
+vars: {
+  d2-config: {
+    theme-id: 0
+  }
+}
+
+
+# Messages from frontend-flow.d2
+diagram_frontend_flow: {
+  style.fill: transparent
+  style.stroke: transparent
+  "Browser" <-> "Frontend App"
+  "Frontend App" <-> "API Server"
+  "API Server" <-> "Cache Service"
+}
+
+# Messages from backend-flow.d2
+diagram_backend_flow: {
+  style.fill: transparent
+  style.stroke: transparent
+  "Job Scheduler" <-> "Background Worker"
+  "Background Worker" <-> "API Server"
+  "API Server" <-> "Database"
+  "API Server" <-> "Cache Service"
+}

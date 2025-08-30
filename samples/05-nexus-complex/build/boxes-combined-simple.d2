@@ -1,0 +1,26 @@
+vars: {
+  d2-config: {
+    theme-id: 0
+  }
+}
+
+
+# Messages from nexus-a2a.d2
+diagram_nexus_a2a: {
+  style.fill: transparent
+  style.stroke: transparent
+  "Agent" <-> "a2a Proxy"
+  "a2a Proxy" <-> "Caller Namespace"
+  "Caller Namespace" <-> "Handler Namespace"
+  "Handler Namespace" <-> "Nexus Gateway"
+}
+
+# Messages from nexus-mcp.d2
+diagram_nexus_mcp: {
+  style.fill: transparent
+  style.stroke: transparent
+  "Agent" <-> "MCP Proxy"
+  "MCP Proxy" <-> "Caller Namespace"
+  "Caller Namespace" <-> "Handler Namespace"
+  "Handler Namespace" <-> "Nexus Gateway"
+}

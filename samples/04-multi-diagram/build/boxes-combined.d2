@@ -1,0 +1,61 @@
+vars: {
+  d2-config: {
+    theme-id: 0
+  }
+}
+
+
+# Messages from frontend-flow.d2
+diagram_frontend_flow: {
+  style.fill: transparent
+  style.stroke: transparent
+  "Browser" -> "Frontend App": "1. Load Page" {
+    style.stroke: "#2196f3"
+  }
+  "Frontend App" -> "API Server": "2. Get User Data" {
+    style.stroke: "#2196f3"
+  }
+  "API Server" -> "Cache Service": "3. Check Cache" {
+    style.stroke: "#2196f3"
+  }
+  "Cache Service" -> "API Server": "4. Cache Miss" {
+    style.stroke: "#2196f3"
+  }
+  "API Server" -> "Frontend App": "5. User Data" {
+    style.stroke: "#2196f3"
+  }
+  "Frontend App" -> "Browser": "6. Render Page" {
+    style.stroke: "#2196f3"
+  }
+}
+
+# Messages from backend-flow.d2
+diagram_backend_flow: {
+  style.fill: transparent
+  style.stroke: transparent
+  "Job Scheduler" -> "Background Worker": "1001. Trigger Sync Job" {
+    style.stroke: "#2196f3"
+  }
+  "Background Worker" -> "API Server": "1002. Request Data Update" {
+    style.stroke: "#2196f3"
+  }
+  "API Server" -> "Database": "1003. Fetch Latest Data" {
+    style.stroke: "#2196f3"
+  }
+  "Database" -> "API Server": "1004. Data Records" {
+    style.stroke: "#2196f3"
+  }
+  "API Server" -> "Cache Service": "1005. Update Cache" {
+    style.stroke: "#2196f3"
+  }
+  "Cache Service" -> "API Server": "1006. Cache Updated" {
+    style.stroke: "#2196f3"
+  }
+  "API Server" -> "Background Worker": "1007. Update Complete" {
+    style.stroke: "#4caf50"
+    style.stroke-width: 2
+  }
+  "Background Worker" -> "Job Scheduler": "1008. Job Finished" {
+    style.stroke: "#2196f3"
+  }
+}

@@ -1,0 +1,24 @@
+vars: {
+  d2-config: {
+    theme-id: 0
+  }
+}
+
+"Browser" -> "Frontend App": "1. Load Page" {
+  style.stroke: "#2196f3"
+}
+"Frontend App" -> "API Server": "2. Get User Data" {
+  style.stroke: "#2196f3"
+}
+"API Server" -> "Cache Service": "3. Check Cache" {
+  style.stroke: "#2196f3"
+}
+"Cache Service" -> "API Server": "4. Cache Miss" {
+  style.stroke: "#2196f3"
+}
+"API Server" -> "Frontend App": "5. User Data" {
+  style.stroke: "#2196f3"
+}
+"Frontend App" -> "Browser": "6. Render Page" {
+  style.stroke: "#2196f3"
+}

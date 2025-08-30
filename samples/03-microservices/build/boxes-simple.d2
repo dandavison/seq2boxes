@@ -1,0 +1,15 @@
+vars: {
+  d2-config: {
+    theme-id: 0
+  }
+}
+
+"Customer" <-> "API Gateway"
+"API Gateway" <-> "Order Service"
+"Order Service" <-> "Inventory Service"
+"Inventory Service" <-> "Warehouse System"
+"Order Service" <-> "Payment Service"
+"Order Service" <-> "Shipping Service"
+"Shipping Service" <-> "Warehouse System"
+"Order Service" <-> "Notification Service"
+"Notification Service" <-> "Customer"

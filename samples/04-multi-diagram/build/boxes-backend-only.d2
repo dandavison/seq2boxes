@@ -1,0 +1,31 @@
+vars: {
+  d2-config: {
+    theme-id: 0
+  }
+}
+
+"Job Scheduler" -> "Background Worker": "1. Trigger Sync Job" {
+  style.stroke: "#2196f3"
+}
+"Background Worker" -> "API Server": "2. Request Data Update" {
+  style.stroke: "#2196f3"
+}
+"API Server" -> "Database": "3. Fetch Latest Data" {
+  style.stroke: "#2196f3"
+}
+"Database" -> "API Server": "4. Data Records" {
+  style.stroke: "#2196f3"
+}
+"API Server" -> "Cache Service": "5. Update Cache" {
+  style.stroke: "#2196f3"
+}
+"Cache Service" -> "API Server": "6. Cache Updated" {
+  style.stroke: "#2196f3"
+}
+"API Server" -> "Background Worker": "7. Update Complete" {
+  style.stroke: "#4caf50"
+  style.stroke-width: 2
+}
+"Background Worker" -> "Job Scheduler": "8. Job Finished" {
+  style.stroke: "#2196f3"
+}

@@ -1,0 +1,27 @@
+vars: {
+  d2-config: {
+    theme-id: 0
+  }
+}
+
+direction: right
+
+"User" -> "Web Application": "1. Login Request" {
+  style.stroke: "#2196f3"
+}
+"Web Application" -> "Auth Service": "2. Validate Credentials" {
+  style.stroke: "#2196f3"
+}
+"Auth Service" -> "Database": "3. Check User" {
+  style.stroke: "#2196f3"
+}
+"Database" -> "Auth Service": "4. User Data" {
+  style.stroke: "#2196f3"
+}
+"Auth Service" -> "Web Application": "5. Auth Token" {
+  style.stroke: "#4caf50"
+  style.stroke-width: 2
+}
+"Web Application" -> "User": "6. Login Success" {
+  style.stroke: "#2196f3"
+}

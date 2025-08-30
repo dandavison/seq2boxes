@@ -1,0 +1,108 @@
+vars: {
+  d2-config: {
+    theme-id: 0
+  }
+}
+
+direction: right
+
+
+# Messages from nexus-a2a.d2
+diagram_nexus_a2a: {
+  style.fill: transparent
+  style.stroke: transparent
+  "Agent" -> "a2a Proxy": "1. messages/send" {
+    style.stroke: "#2196f3"
+  }
+  "a2a Proxy" -> "Caller Namespace": "2. nexus Start\n/service/operation" {
+    style.stroke: "#2196f3"
+  }
+  "Caller Namespace" -> "Handler Namespace": "3. nexus Start\n/service/operation" {
+    style.stroke: "#2196f3"
+  }
+  "Handler Namespace" -> "Nexus Gateway": "4. nexus task" {
+    style.stroke: "#2196f3"
+  }
+  "Nexus Gateway" -> "Handler Namespace": "5. start handler wf" {
+    style.stroke: "#2196f3"
+  }
+  "Nexus Gateway" -> "Handler Namespace": "6. operation token" {
+    style.stroke: "#4caf50"
+    style.stroke-width: 2
+  }
+  "Handler Namespace" -> "Caller Namespace": "7. operation token" {
+    style.stroke: "#4caf50"
+    style.stroke-width: 2
+  }
+  "Caller Namespace" -> "a2a Proxy": "8. operation token" {
+    style.stroke: "#4caf50"
+    style.stroke-width: 2
+  }
+  "a2a Proxy" -> "Agent": "9. Task ID\n(running)" {
+    style.stroke: "#2196f3"
+  }
+  "Agent" -> "a2a Proxy": "10. tasks/get" {
+    style.stroke: "#2196f3"
+  }
+  "a2a Proxy" -> "Caller Namespace": "11. nexus Get\n/service/operation\n(long poll)" {
+    style.stroke: "#2196f3"
+  }
+  "Handler Namespace" -> "Caller Namespace": "12. nexus callback" {
+    style.stroke: "#4caf50"
+    style.stroke-width: 2
+  }
+  "Caller Namespace" -> "a2a Proxy": "13. long poll\nreleased" {
+    style.stroke: "#2196f3"
+  }
+  "a2a Proxy" -> "Agent": "14. Task\n(completed)" {
+    style.stroke: "#4caf50"
+    style.stroke-width: 2
+  }
+}
+
+# Messages from nexus-mcp.d2
+diagram_nexus_mcp: {
+  style.fill: transparent
+  style.stroke: transparent
+  "Agent" -> "MCP Proxy": "1001. tools/call" {
+    style.stroke: "#2196f3"
+  }
+  "MCP Proxy" -> "Caller Namespace": "1002. nexus Start\n/service/operation" {
+    style.stroke: "#2196f3"
+  }
+  "Caller Namespace" -> "Handler Namespace": "1003. nexus Start\n/service/operation" {
+    style.stroke: "#2196f3"
+  }
+  "Handler Namespace" -> "Nexus Gateway": "1004. nexus task" {
+    style.stroke: "#2196f3"
+  }
+  "Nexus Gateway" -> "Handler Namespace": "1005. start handler wf" {
+    style.stroke: "#2196f3"
+  }
+  "Nexus Gateway" -> "Handler Namespace": "1006. operation token" {
+    style.stroke: "#4caf50"
+    style.stroke-width: 2
+  }
+  "Handler Namespace" -> "Caller Namespace": "1007. operation token" {
+    style.stroke: "#4caf50"
+    style.stroke-width: 2
+  }
+  "Caller Namespace" -> "MCP Proxy": "1008. operation token" {
+    style.stroke: "#4caf50"
+    style.stroke-width: 2
+  }
+  "MCP Proxy" -> "Caller Namespace": "1009. nexus Get\n/service/operation\n(long poll)" {
+    style.stroke: "#2196f3"
+  }
+  "Handler Namespace" -> "Caller Namespace": "1010. nexus callback" {
+    style.stroke: "#4caf50"
+    style.stroke-width: 2
+  }
+  "Caller Namespace" -> "MCP Proxy": "1011. long poll\nreleased" {
+    style.stroke: "#2196f3"
+  }
+  "MCP Proxy" -> "Agent": "1012. tool result" {
+    style.stroke: "#4caf50"
+    style.stroke-width: 2
+  }
+}

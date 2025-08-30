@@ -1,0 +1,63 @@
+vars: {
+  d2-config: {
+    theme-id: 0
+  }
+}
+
+direction: right
+
+"Customer" -> "API Gateway": "1. Place Order" {
+  style.stroke: "#2196f3"
+}
+"API Gateway" -> "Order Service": "2. Create Order Request" {
+  style.stroke: "#2196f3"
+}
+"Order Service" -> "Inventory Service": "3. Check Stock Availability" {
+  style.stroke: "#2196f3"
+}
+"Inventory Service" -> "Warehouse System": "4. Query Stock Levels" {
+  style.stroke: "#2196f3"
+}
+"Warehouse System" -> "Inventory Service": "5. Stock Status" {
+  style.stroke: "#2196f3"
+}
+"Inventory Service" -> "Order Service": "6. Stock Confirmed" {
+  style.stroke: "#2196f3"
+}
+"Order Service" -> "Payment Service": "7. Process Payment" {
+  style.stroke: "#2196f3"
+}
+"Payment Service" -> "Order Service": "8. Payment Successful" {
+  style.stroke: "#2196f3"
+}
+"Order Service" -> "Inventory Service": "9. Reserve Items" {
+  style.stroke: "#2196f3"
+}
+"Inventory Service" -> "Order Service": "10. Items Reserved" {
+  style.stroke: "#2196f3"
+}
+"Order Service" -> "Shipping Service": "11. Schedule Delivery" {
+  style.stroke: "#2196f3"
+}
+"Shipping Service" -> "Warehouse System": "12. Prepare Shipment" {
+  style.stroke: "#2196f3"
+}
+"Warehouse System" -> "Shipping Service": "13. Shipment Ready" {
+  style.stroke: "#2196f3"
+}
+"Shipping Service" -> "Order Service": "14. Delivery Scheduled" {
+  style.stroke: "#2196f3"
+}
+"Order Service" -> "Notification Service": "15. Send Confirmation" {
+  style.stroke: "#2196f3"
+}
+"Notification Service" -> "Customer": "16. Order Confirmation Email" {
+  style.stroke: "#2196f3"
+}
+"Order Service" -> "API Gateway": "17. Order Created Response" {
+  style.stroke: "#4caf50"
+  style.stroke-width: 2
+}
+"API Gateway" -> "Customer": "18. Order Confirmation" {
+  style.stroke: "#2196f3"
+}
