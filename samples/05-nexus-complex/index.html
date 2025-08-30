@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sample 05: Complex Nexus Architecture - seq2boxes</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+  <!-- Top Navigation Bar -->
+  <nav class="navbar">
+    <div class="navbar-content">
+      <div class="navbar-left">
+        <a href="../" class="nav-back">← Samples</a>
+        <span class="nav-separator">|</span>
+        <h1 class="nav-title">Sample 05: Complex Nexus Architecture</h1>
+      </div>
+      <div class="navbar-right">
+        <div class="view-toggle-nav">
+          <span>Diagram</span>
+          <label class="switch">
+            <input type="checkbox" class="view-toggle-global">
+            <span class="slider"></span>
+          </label>
+          <span>Code</span>
+        </div>
+      </div>
+    </div>
+  </nav>
+  
+  <div class="main-container">
+    <div class="description-bar">
+      Real-world Nexus sequence diagrams demonstrating seq2boxes on complex, production-like scenarios
+    </div>
+    
+    <div class="tabs">
+      <button class="tab active" data-target="tab-original">Original</button>
+<button class="tab" data-target="tab-combined">Default Combined</button>
+<button class="tab" data-target="tab-simple">Simple Arrows</button>
+<button class="tab" data-target="tab-a2a">A2A Only</button>
+<button class="tab" data-target="tab-mcp">MCP Only</button>
+<button class="tab" data-target="tab-flagship">Flagship Theme</button>
+    </div>
+    
+    <div class="tab-contents">
+      <div id="tab-original" class="tab-content">
+  <div class="diagram-container">
+    <div>
+  <div>
+    <h4>Nexus A2A (Async-to-Async)</h4>
+    <img src="build/nexus-a2a.svg" alt="Nexus A2A">
+  </div>
+  <div>
+    <h4>Nexus MCP (Model Context Protocol)</h4>
+    <img src="build/nexus-mcp.svg" alt="Nexus MCP">
+  </div>
+</div>
+  </div>
+  <div class="code-container hidden">
+    <div class="code-header">
+      <span>Original D2 Sequence Diagrams</span>
+      <button class="copy-button">Copy</button>
+    </div>
+    <pre><code>// Nexus A2A (Async-to-Async)
+shape: sequence_diagram
+agent: {
+  label: Agent
+}
+a2a-proxy: {
+  label: a2a Proxy
+}
+caller-ns: {
+  label: Caller Namespace
+}
+handler-ns: {
+  label: Handler Namespace
+}
+nexus-gateway: {
+  label: Nexus Gateway
+}
+
+agent -{{TAB_CONTENTS}}gt; a2a-proxy: messages/send
+a2a-proxy -{{TAB_CONTENTS}}gt; caller-ns: nexus Start\n/service/operation
+caller-ns -{{TAB_CONTENTS}}gt; handler-ns: nexus Start\n/service/operation
+handler-ns -{{TAB_CONTENTS}}gt; nexus-gateway: nexus task
+nexus-gateway -{{TAB_CONTENTS}}gt; handler-ns: start handler wf
+nexus-gateway -{{TAB_CONTENTS}}gt; handler-ns: operation token
+handler-ns -{{TAB_CONTENTS}}gt; caller-ns: operation token
+caller-ns -{{TAB_CONTENTS}}gt; a2a-proxy: operation token
+a2a-proxy -{{TAB_CONTENTS}}gt; agent: Task ID\n(running)
+agent -{{TAB_CONTENTS}}gt; a2a-proxy: tasks/get
+a2a-proxy -{{TAB_CONTENTS}}gt; caller-ns: nexus Get\n/service/operation\n(long poll)
+handler-ns.{{TAB_CONTENTS}}quot;handler wf\ncompletes{{TAB_CONTENTS}}quot;
+handler-ns -{{TAB_CONTENTS}}gt; caller-ns: nexus callback
+caller-ns -{{TAB_CONTENTS}}gt; a2a-proxy: long poll\nreleased
+a2a-proxy -{{TAB_CONTENTS}}gt; agent: Task\n(completed)
+
+// Nexus MCP (Model Context Protocol)
+shape: sequence_diagram
+agent: {
+  label: Agent
+}
+mcp-proxy: {
+  label: MCP Proxy
+}
+caller-ns: {
+  label: Caller Namespace
+}
+handler-ns: {
+  label: Handler Namespace
+}
+nexus-gateway: {
+  label: Nexus Gateway
+}
+
+agent -{{TAB_CONTENTS}}gt; mcp-proxy: tools/call
+mcp-proxy -{{TAB_CONTENTS}}gt; caller-ns: nexus Start\n/service/operation
+caller-ns -{{TAB_CONTENTS}}gt; handler-ns: nexus Start\n/service/operation
+handler-ns -{{TAB_CONTENTS}}gt; nexus-gateway: nexus task
+nexus-gateway -{{TAB_CONTENTS}}gt; handler-ns: start handler wf
+nexus-gateway -{{TAB_CONTENTS}}gt; handler-ns: operation token
+handler-ns -{{TAB_CONTENTS}}gt; caller-ns: operation token
+caller-ns -{{TAB_CONTENTS}}gt; mcp-proxy: operation token
+mcp-proxy -{{TAB_CONTENTS}}gt; caller-ns: nexus Get\n/service/operation\n(long poll)
+handler-ns.{{TAB_CONTENTS}}quot;handler wf\ncompletes{{TAB_CONTENTS}}quot;
+handler-ns -{{TAB_CONTENTS}}gt; caller-ns: nexus callback
+caller-ns -{{TAB_CONTENTS}}gt; mcp-proxy: long poll\nreleased
+mcp-proxy -{{TAB_CONTENTS}}gt; agent: tool result</code></pre>
+  </div>
+</div>\n\n<div id="tab-combined" class="tab-content hidden">
+  <div class="diagram-container">
+    <img src="build/boxes-combined.svg" alt="Default Combined">
+  </div>
+  <div class="code-container hidden">
+    <div class="code-header">
+      <span>Generated D2 Code - Default Combined</span>
+      <button class="copy-button">Copy</button>
+    </div>
+    <pre><code># Command: ./seq2boxes nexus-a2a.d2 nexus-mcp.d2
+
+vars: {
+  d2-config: {
+    theme-id: 0
+  }
+}
+
+direction: right
+
+
+# Messages from nexus-a2a.d2
+diagram_nexus_a2a: {
+  style.fill: transparent
+  style.stroke: transparent
+  {{TAB_CONTENTS}}quot;Agent{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;a2a Proxy{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;1. messages/send{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;a2a Proxy{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;2. nexus Start /service/operation{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Handler Namespace{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;3. nexus Start /service/operation{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;Handler Namespace{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Nexus Gateway{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;4. nexus task{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;Nexus Gateway{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Handler Namespace{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;5. start handler wf{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;Nexus Gateway{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Handler Namespace{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;6. operation token{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#4caf50{{TAB_CONTENTS}}quot;
+    style.stroke-width: 2
+  }
+  {{TAB_CONTENTS}}quot;Handler Namespace{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;7. operation token{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#4caf50{{TAB_CONTENTS}}quot;
+    style.stroke-width: 2
+  }
+  {{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;a2a Proxy{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;8. operation token{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#4caf50{{TAB_CONTENTS}}quot;
+    style.stroke-width: 2
+  }
+  {{TAB_CONTENTS}}quot;a2a Proxy{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Agent{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;9. Task ID (running){{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;Agent{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;a2a Proxy{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;10. tasks/get{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;a2a Proxy{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;11. nexus Get /service/operation (long poll){{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;Handler Namespace{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;12. nexus callback{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#4caf50{{TAB_CONTENTS}}quot;
+    style.stroke-width: 2
+  }
+  {{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;a2a Proxy{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;13. long poll released{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;a2a Proxy{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Agent{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;14. Task (completed){{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#4caf50{{TAB_CONTENTS}}quot;
+    style.stroke-width: 2
+  }
+}
+
+# Messages from nexus-mcp.d2
+diagram_nexus_mcp: {
+  style.fill: transparent
+  style.stroke: transparent
+  {{TAB_CONTENTS}}quot;Agent{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;MCP Proxy{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;1001. tools/call{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;MCP Proxy{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;1002. nexus Start /service/operation{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Handler Namespace{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;1003. nexus Start /service/operation{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;Handler Namespace{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Nexus Gateway{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;1004. nexus task{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;Nexus Gateway{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Handler Namespace{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;1005. start handler wf{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;Nexus Gateway{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Handler Namespace{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;1006. operation token{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#4caf50{{TAB_CONTENTS}}quot;
+    style.stroke-width: 2
+  }
+  {{TAB_CONTENTS}}quot;Handler Namespace{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;1007. operation token{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#4caf50{{TAB_CONTENTS}}quot;
+    style.stroke-width: 2
+  }
+  {{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;MCP Proxy{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;1008. operation token{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#4caf50{{TAB_CONTENTS}}quot;
+    style.stroke-width: 2
+  }
+  {{TAB_CONTENTS}}quot;MCP Proxy{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;1009. nexus Get /service/operation (long poll){{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;Handler Namespace{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;1010. nexus callback{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#4caf50{{TAB_CONTENTS}}quot;
+    style.stroke-width: 2
+  }
+  {{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;MCP Proxy{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;1011. long poll released{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;MCP Proxy{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Agent{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;1012. tool result{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#4caf50{{TAB_CONTENTS}}quot;
+    style.stroke-width: 2
+  }
+}</code></pre>
+  </div>
+</div>
+
+<div id="tab-simple" class="tab-content hidden">
+  <div class="diagram-container">
+    <img src="build/boxes-combined-simple.svg" alt="Combined Simple Arrows">
+  </div>
+  <div class="code-container hidden">
+    <div class="code-header">
+      <span>Generated D2 Code - Combined Simple Arrows</span>
+      <button class="copy-button">Copy</button>
+    </div>
+    <pre><code># Command: ./seq2boxes --arrows simple nexus-a2a.d2 nexus-mcp.d2
+
+vars: {
+  d2-config: {
+    theme-id: 0
+  }
+}
+
+direction: right
+
+
+# Messages from nexus-a2a.d2
+diagram_nexus_a2a: {
+  style.fill: transparent
+  style.stroke: transparent
+  {{TAB_CONTENTS}}quot;Agent{{TAB_CONTENTS}}quot; {{TAB_CONTENTS}}lt;-{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;a2a Proxy{{TAB_CONTENTS}}quot;
+  {{TAB_CONTENTS}}quot;a2a Proxy{{TAB_CONTENTS}}quot; {{TAB_CONTENTS}}lt;-{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot;
+  {{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot; {{TAB_CONTENTS}}lt;-{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Handler Namespace{{TAB_CONTENTS}}quot;
+  {{TAB_CONTENTS}}quot;Handler Namespace{{TAB_CONTENTS}}quot; {{TAB_CONTENTS}}lt;-{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Nexus Gateway{{TAB_CONTENTS}}quot;
+}
+
+# Messages from nexus-mcp.d2
+diagram_nexus_mcp: {
+  style.fill: transparent
+  style.stroke: transparent
+  {{TAB_CONTENTS}}quot;Agent{{TAB_CONTENTS}}quot; {{TAB_CONTENTS}}lt;-{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;MCP Proxy{{TAB_CONTENTS}}quot;
+  {{TAB_CONTENTS}}quot;MCP Proxy{{TAB_CONTENTS}}quot; {{TAB_CONTENTS}}lt;-{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot;
+  {{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot; {{TAB_CONTENTS}}lt;-{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Handler Namespace{{TAB_CONTENTS}}quot;
+  {{TAB_CONTENTS}}quot;Handler Namespace{{TAB_CONTENTS}}quot; {{TAB_CONTENTS}}lt;-{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Nexus Gateway{{TAB_CONTENTS}}quot;
+}</code></pre>
+  </div>
+</div>
+
+<div id="tab-a2a" class="tab-content hidden">
+  <div class="diagram-container">
+    <img src="build/boxes-a2a.svg" alt="A2A Boxes and Arrows">
+  </div>
+  <div class="code-container hidden">
+    <div class="code-header">
+      <span>Generated D2 Code - A2A Boxes and Arrows</span>
+      <button class="copy-button">Copy</button>
+    </div>
+    <pre><code># Command: ./seq2boxes nexus-a2a.d2
+
+vars: {
+  d2-config: {
+    theme-id: 0
+  }
+}
+
+direction: right
+
+{{TAB_CONTENTS}}quot;Agent{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;a2a Proxy{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;1. messages/send{{TAB_CONTENTS}}quot; {
+  style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+}
+{{TAB_CONTENTS}}quot;a2a Proxy{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;2. nexus Start /service/operation{{TAB_CONTENTS}}quot; {
+  style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+}
+{{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Handler Namespace{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;3. nexus Start /service/operation{{TAB_CONTENTS}}quot; {
+  style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+}
+{{TAB_CONTENTS}}quot;Handler Namespace{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Nexus Gateway{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;4. nexus task{{TAB_CONTENTS}}quot; {
+  style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+}
+{{TAB_CONTENTS}}quot;Nexus Gateway{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Handler Namespace{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;5. start handler wf{{TAB_CONTENTS}}quot; {
+  style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+}
+{{TAB_CONTENTS}}quot;Nexus Gateway{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Handler Namespace{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;6. operation token{{TAB_CONTENTS}}quot; {
+  style.stroke: {{TAB_CONTENTS}}quot;#4caf50{{TAB_CONTENTS}}quot;
+  style.stroke-width: 2
+}
+{{TAB_CONTENTS}}quot;Handler Namespace{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;7. operation token{{TAB_CONTENTS}}quot; {
+  style.stroke: {{TAB_CONTENTS}}quot;#4caf50{{TAB_CONTENTS}}quot;
+  style.stroke-width: 2
+}
+{{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;a2a Proxy{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;8. operation token{{TAB_CONTENTS}}quot; {
+  style.stroke: {{TAB_CONTENTS}}quot;#4caf50{{TAB_CONTENTS}}quot;
+  style.stroke-width: 2
+}
+{{TAB_CONTENTS}}quot;a2a Proxy{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Agent{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;9. Task ID (running){{TAB_CONTENTS}}quot; {
+  style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+}
+{{TAB_CONTENTS}}quot;Agent{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;a2a Proxy{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;10. tasks/get{{TAB_CONTENTS}}quot; {
+  style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+}
+{{TAB_CONTENTS}}quot;a2a Proxy{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;11. nexus Get /service/operation (long poll){{TAB_CONTENTS}}quot; {
+  style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+}
+{{TAB_CONTENTS}}quot;Handler Namespace{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;12. nexus callback{{TAB_CONTENTS}}quot; {
+  style.stroke: {{TAB_CONTENTS}}quot;#4caf50{{TAB_CONTENTS}}quot;
+  style.stroke-width: 2
+}
+{{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;a2a Proxy{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;13. long poll released{{TAB_CONTENTS}}quot; {
+  style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+}
+{{TAB_CONTENTS}}quot;a2a Proxy{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Agent{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;14. Task (completed){{TAB_CONTENTS}}quot; {
+  style.stroke: {{TAB_CONTENTS}}quot;#4caf50{{TAB_CONTENTS}}quot;
+  style.stroke-width: 2
+}</code></pre>
+  </div>
+</div>
+
+<div id="tab-mcp" class="tab-content hidden">
+  <div class="diagram-container">
+    <img src="build/boxes-mcp.svg" alt="MCP Boxes and Arrows">
+  </div>
+  <div class="code-container hidden">
+    <div class="code-header">
+      <span>Generated D2 Code - MCP Boxes and Arrows</span>
+      <button class="copy-button">Copy</button>
+    </div>
+    <pre><code># Command: ./seq2boxes nexus-mcp.d2
+
+vars: {
+  d2-config: {
+    theme-id: 0
+  }
+}
+
+direction: right
+
+{{TAB_CONTENTS}}quot;Agent{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;MCP Proxy{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;1. tools/call{{TAB_CONTENTS}}quot; {
+  style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+}
+{{TAB_CONTENTS}}quot;MCP Proxy{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;2. nexus Start /service/operation{{TAB_CONTENTS}}quot; {
+  style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+}
+{{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Handler Namespace{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;3. nexus Start /service/operation{{TAB_CONTENTS}}quot; {
+  style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+}
+{{TAB_CONTENTS}}quot;Handler Namespace{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Nexus Gateway{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;4. nexus task{{TAB_CONTENTS}}quot; {
+  style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+}
+{{TAB_CONTENTS}}quot;Nexus Gateway{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Handler Namespace{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;5. start handler wf{{TAB_CONTENTS}}quot; {
+  style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+}
+{{TAB_CONTENTS}}quot;Nexus Gateway{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Handler Namespace{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;6. operation token{{TAB_CONTENTS}}quot; {
+  style.stroke: {{TAB_CONTENTS}}quot;#4caf50{{TAB_CONTENTS}}quot;
+  style.stroke-width: 2
+}
+{{TAB_CONTENTS}}quot;Handler Namespace{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;7. operation token{{TAB_CONTENTS}}quot; {
+  style.stroke: {{TAB_CONTENTS}}quot;#4caf50{{TAB_CONTENTS}}quot;
+  style.stroke-width: 2
+}
+{{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;MCP Proxy{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;8. operation token{{TAB_CONTENTS}}quot; {
+  style.stroke: {{TAB_CONTENTS}}quot;#4caf50{{TAB_CONTENTS}}quot;
+  style.stroke-width: 2
+}
+{{TAB_CONTENTS}}quot;MCP Proxy{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;9. nexus Get /service/operation (long poll){{TAB_CONTENTS}}quot; {
+  style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+}
+{{TAB_CONTENTS}}quot;Handler Namespace{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;10. nexus callback{{TAB_CONTENTS}}quot; {
+  style.stroke: {{TAB_CONTENTS}}quot;#4caf50{{TAB_CONTENTS}}quot;
+  style.stroke-width: 2
+}
+{{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;MCP Proxy{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;11. long poll released{{TAB_CONTENTS}}quot; {
+  style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+}
+{{TAB_CONTENTS}}quot;MCP Proxy{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Agent{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;12. tool result{{TAB_CONTENTS}}quot; {
+  style.stroke: {{TAB_CONTENTS}}quot;#4caf50{{TAB_CONTENTS}}quot;
+  style.stroke-width: 2
+}</code></pre>
+  </div>
+</div>
+
+<div id="tab-flagship" class="tab-content hidden">
+  <div class="diagram-container">
+    <img src="build/boxes-combined-flagship.svg" alt="Flagship Theme">
+  </div>
+  <div class="code-container hidden">
+    <div class="code-header">
+      <span>Generated D2 Code - Flagship Theme</span>
+      <button class="copy-button">Copy</button>
+    </div>
+    <pre><code># Command: ./seq2boxes --theme flagship-terrastruct nexus-a2a.d2 nexus-mcp.d2
+
+vars: {
+  d2-config: {
+    theme-id: 0
+  }
+}
+
+direction: right
+
+
+# Messages from nexus-a2a.d2
+diagram_nexus_a2a: {
+  style.fill: transparent
+  style.stroke: transparent
+  {{TAB_CONTENTS}}quot;Agent{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;a2a Proxy{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;1. messages/send{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;a2a Proxy{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;2. nexus Start /service/operation{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Handler Namespace{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;3. nexus Start /service/operation{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;Handler Namespace{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Nexus Gateway{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;4. nexus task{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;Nexus Gateway{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Handler Namespace{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;5. start handler wf{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;Nexus Gateway{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Handler Namespace{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;6. operation token{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#4caf50{{TAB_CONTENTS}}quot;
+    style.stroke-width: 2
+  }
+  {{TAB_CONTENTS}}quot;Handler Namespace{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;7. operation token{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#4caf50{{TAB_CONTENTS}}quot;
+    style.stroke-width: 2
+  }
+  {{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;a2a Proxy{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;8. operation token{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#4caf50{{TAB_CONTENTS}}quot;
+    style.stroke-width: 2
+  }
+  {{TAB_CONTENTS}}quot;a2a Proxy{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Agent{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;9. Task ID (running){{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;Agent{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;a2a Proxy{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;10. tasks/get{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;a2a Proxy{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;11. nexus Get /service/operation (long poll){{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;Handler Namespace{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;12. nexus callback{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#4caf50{{TAB_CONTENTS}}quot;
+    style.stroke-width: 2
+  }
+  {{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;a2a Proxy{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;13. long poll released{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;a2a Proxy{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Agent{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;14. Task (completed){{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#4caf50{{TAB_CONTENTS}}quot;
+    style.stroke-width: 2
+  }
+}
+
+# Messages from nexus-mcp.d2
+diagram_nexus_mcp: {
+  style.fill: transparent
+  style.stroke: transparent
+  {{TAB_CONTENTS}}quot;Agent{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;MCP Proxy{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;1001. tools/call{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;MCP Proxy{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;1002. nexus Start /service/operation{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Handler Namespace{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;1003. nexus Start /service/operation{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;Handler Namespace{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Nexus Gateway{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;1004. nexus task{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;Nexus Gateway{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Handler Namespace{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;1005. start handler wf{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;Nexus Gateway{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Handler Namespace{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;1006. operation token{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#4caf50{{TAB_CONTENTS}}quot;
+    style.stroke-width: 2
+  }
+  {{TAB_CONTENTS}}quot;Handler Namespace{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;1007. operation token{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#4caf50{{TAB_CONTENTS}}quot;
+    style.stroke-width: 2
+  }
+  {{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;MCP Proxy{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;1008. operation token{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#4caf50{{TAB_CONTENTS}}quot;
+    style.stroke-width: 2
+  }
+  {{TAB_CONTENTS}}quot;MCP Proxy{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;1009. nexus Get /service/operation (long poll){{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;Handler Namespace{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;1010. nexus callback{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#4caf50{{TAB_CONTENTS}}quot;
+    style.stroke-width: 2
+  }
+  {{TAB_CONTENTS}}quot;Caller Namespace{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;MCP Proxy{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;1011. long poll released{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;MCP Proxy{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Agent{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;1012. tool result{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#4caf50{{TAB_CONTENTS}}quot;
+    style.stroke-width: 2
+  }
+}</code></pre>
+  </div>
+</div>
+    </div>
+  </div>
+  
+  <!-- Modal for enlarged diagrams -->
+  <div id="imageModal" class="modal">
+    <span class="modal-close">&times;</span>
+    <div class="modal-content">
+      <img id="modalImage" src="" alt="">
+    </div>
+    <div id="modalCaption" class="modal-caption"></div>
+  </div>
+  
+  <script src="../assets/script.js"></script>
+</body>
+</html>

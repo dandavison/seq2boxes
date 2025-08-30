@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sample 04: Multiple Diagrams with Shared Actors - seq2boxes</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+  <!-- Top Navigation Bar -->
+  <nav class="navbar">
+    <div class="navbar-content">
+      <div class="navbar-left">
+        <a href="../" class="nav-back">← Samples</a>
+        <span class="nav-separator">|</span>
+        <h1 class="nav-title">Sample 04: Multiple Diagrams with Shared Actors</h1>
+      </div>
+      <div class="navbar-right">
+        <div class="view-toggle-nav">
+          <span>Diagram</span>
+          <label class="switch">
+            <input type="checkbox" class="view-toggle-global">
+            <span class="slider"></span>
+          </label>
+          <span>Code</span>
+        </div>
+      </div>
+    </div>
+  </nav>
+  
+  <div class="main-container">
+    <div class="description-bar">
+      Demonstrates how seq2boxes handles multiple input sequence diagrams that share common actors
+    </div>
+    
+    <div class="tabs">
+      <button class="tab active" data-target="tab-original">Original</button>
+<button class="tab" data-target="tab-combined">Default Combined</button>
+<button class="tab" data-target="tab-simple">Simple Arrows</button>
+<button class="tab" data-target="tab-frontend">Frontend Only</button>
+<button class="tab" data-target="tab-backend">Backend Only</button>
+    </div>
+    
+    <div class="tab-contents">
+      <div id="tab-original" class="tab-content">
+  <div class="diagram-container">
+    <div>
+  <div>
+    <h4>Frontend Flow</h4>
+    <img src="build/frontend-flow.svg" alt="Frontend Flow">
+  </div>
+  <div>
+    <h4>Backend Flow</h4>
+    <img src="build/backend-flow.svg" alt="Backend Flow">
+  </div>
+</div>
+  </div>
+  <div class="code-container hidden">
+    <div class="code-header">
+      <span>Original D2 Sequence Diagrams</span>
+      <button class="copy-button">Copy</button>
+    </div>
+    <pre><code>// Frontend Flow
+shape: sequence_diagram
+browser: Browser
+frontend: Frontend App
+api: API Server
+cache: Cache Service
+
+browser -{{TAB_CONTENTS}}gt; frontend: Load Page
+frontend -{{TAB_CONTENTS}}gt; api: Get User Data
+api -{{TAB_CONTENTS}}gt; cache: Check Cache
+cache -{{TAB_CONTENTS}}gt; api: Cache Miss
+api -{{TAB_CONTENTS}}gt; frontend: User Data
+frontend -{{TAB_CONTENTS}}gt; browser: Render Page
+
+// Backend Flow
+shape: sequence_diagram
+scheduler: Job Scheduler
+worker: Background Worker
+api: API Server
+cache: Cache Service
+database: Database
+
+scheduler -{{TAB_CONTENTS}}gt; worker: Trigger Sync Job
+worker -{{TAB_CONTENTS}}gt; api: Request Data Update
+api -{{TAB_CONTENTS}}gt; database: Fetch Latest Data
+database -{{TAB_CONTENTS}}gt; api: Data Records
+api -{{TAB_CONTENTS}}gt; cache: Update Cache
+cache -{{TAB_CONTENTS}}gt; api: Cache Updated
+api -{{TAB_CONTENTS}}gt; worker: Update Complete
+worker -{{TAB_CONTENTS}}gt; scheduler: Job Finished</code></pre>
+  </div>
+</div>\n\n<div id="tab-combined" class="tab-content hidden">
+  <div class="diagram-container">
+    <img src="build/boxes-combined.svg" alt="Default Combined">
+  </div>
+  <div class="code-container hidden">
+    <div class="code-header">
+      <span>Generated D2 Code - Default Combined</span>
+      <button class="copy-button">Copy</button>
+    </div>
+    <pre><code># Command: ./seq2boxes frontend-flow.d2 backend-flow.d2
+
+vars: {
+  d2-config: {
+    theme-id: 0
+  }
+}
+
+direction: right
+
+
+# Messages from frontend-flow.d2
+diagram_frontend_flow: {
+  style.fill: transparent
+  style.stroke: transparent
+  {{TAB_CONTENTS}}quot;Browser{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Frontend App{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;1. Load Page{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;Frontend App{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;API Server{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;2. Get User Data{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;API Server{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Cache Service{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;3. Check Cache{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;Cache Service{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;API Server{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;4. Cache Miss{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;API Server{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Frontend App{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;5. User Data{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;Frontend App{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Browser{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;6. Render Page{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+}
+
+# Messages from backend-flow.d2
+diagram_backend_flow: {
+  style.fill: transparent
+  style.stroke: transparent
+  {{TAB_CONTENTS}}quot;Job Scheduler{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Background Worker{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;1001. Trigger Sync Job{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;Background Worker{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;API Server{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;1002. Request Data Update{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;API Server{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Database{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;1003. Fetch Latest Data{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;Database{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;API Server{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;1004. Data Records{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;API Server{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Cache Service{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;1005. Update Cache{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;Cache Service{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;API Server{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;1006. Cache Updated{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+  {{TAB_CONTENTS}}quot;API Server{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Background Worker{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;1007. Update Complete{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#4caf50{{TAB_CONTENTS}}quot;
+    style.stroke-width: 2
+  }
+  {{TAB_CONTENTS}}quot;Background Worker{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Job Scheduler{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;1008. Job Finished{{TAB_CONTENTS}}quot; {
+    style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+  }
+}</code></pre>
+  </div>
+</div>
+
+<div id="tab-simple" class="tab-content hidden">
+  <div class="diagram-container">
+    <img src="build/boxes-combined-simple.svg" alt="Combined Simple Arrows">
+  </div>
+  <div class="code-container hidden">
+    <div class="code-header">
+      <span>Generated D2 Code - Combined Simple Arrows</span>
+      <button class="copy-button">Copy</button>
+    </div>
+    <pre><code># Command: ./seq2boxes --arrows simple frontend-flow.d2 backend-flow.d2
+
+vars: {
+  d2-config: {
+    theme-id: 0
+  }
+}
+
+direction: right
+
+
+# Messages from frontend-flow.d2
+diagram_frontend_flow: {
+  style.fill: transparent
+  style.stroke: transparent
+  {{TAB_CONTENTS}}quot;Browser{{TAB_CONTENTS}}quot; {{TAB_CONTENTS}}lt;-{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Frontend App{{TAB_CONTENTS}}quot;
+  {{TAB_CONTENTS}}quot;Frontend App{{TAB_CONTENTS}}quot; {{TAB_CONTENTS}}lt;-{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;API Server{{TAB_CONTENTS}}quot;
+  {{TAB_CONTENTS}}quot;API Server{{TAB_CONTENTS}}quot; {{TAB_CONTENTS}}lt;-{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Cache Service{{TAB_CONTENTS}}quot;
+}
+
+# Messages from backend-flow.d2
+diagram_backend_flow: {
+  style.fill: transparent
+  style.stroke: transparent
+  {{TAB_CONTENTS}}quot;Job Scheduler{{TAB_CONTENTS}}quot; {{TAB_CONTENTS}}lt;-{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Background Worker{{TAB_CONTENTS}}quot;
+  {{TAB_CONTENTS}}quot;Background Worker{{TAB_CONTENTS}}quot; {{TAB_CONTENTS}}lt;-{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;API Server{{TAB_CONTENTS}}quot;
+  {{TAB_CONTENTS}}quot;API Server{{TAB_CONTENTS}}quot; {{TAB_CONTENTS}}lt;-{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Database{{TAB_CONTENTS}}quot;
+  {{TAB_CONTENTS}}quot;API Server{{TAB_CONTENTS}}quot; {{TAB_CONTENTS}}lt;-{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Cache Service{{TAB_CONTENTS}}quot;
+}</code></pre>
+  </div>
+</div>
+
+<div id="tab-frontend" class="tab-content hidden">
+  <div class="diagram-container">
+    <img src="build/boxes-frontend-only.svg" alt="Frontend Only">
+  </div>
+  <div class="code-container hidden">
+    <div class="code-header">
+      <span>Generated D2 Code - Frontend Only</span>
+      <button class="copy-button">Copy</button>
+    </div>
+    <pre><code># Command: ./seq2boxes frontend-flow.d2
+
+vars: {
+  d2-config: {
+    theme-id: 0
+  }
+}
+
+direction: right
+
+{{TAB_CONTENTS}}quot;Browser{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Frontend App{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;1. Load Page{{TAB_CONTENTS}}quot; {
+  style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+}
+{{TAB_CONTENTS}}quot;Frontend App{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;API Server{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;2. Get User Data{{TAB_CONTENTS}}quot; {
+  style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+}
+{{TAB_CONTENTS}}quot;API Server{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Cache Service{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;3. Check Cache{{TAB_CONTENTS}}quot; {
+  style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+}
+{{TAB_CONTENTS}}quot;Cache Service{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;API Server{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;4. Cache Miss{{TAB_CONTENTS}}quot; {
+  style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+}
+{{TAB_CONTENTS}}quot;API Server{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Frontend App{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;5. User Data{{TAB_CONTENTS}}quot; {
+  style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+}
+{{TAB_CONTENTS}}quot;Frontend App{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Browser{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;6. Render Page{{TAB_CONTENTS}}quot; {
+  style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+}</code></pre>
+  </div>
+</div>
+
+<div id="tab-backend" class="tab-content hidden">
+  <div class="diagram-container">
+    <img src="build/boxes-backend-only.svg" alt="Backend Only">
+  </div>
+  <div class="code-container hidden">
+    <div class="code-header">
+      <span>Generated D2 Code - Backend Only</span>
+      <button class="copy-button">Copy</button>
+    </div>
+    <pre><code># Command: ./seq2boxes backend-flow.d2
+
+vars: {
+  d2-config: {
+    theme-id: 0
+  }
+}
+
+direction: right
+
+{{TAB_CONTENTS}}quot;Job Scheduler{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Background Worker{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;1. Trigger Sync Job{{TAB_CONTENTS}}quot; {
+  style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+}
+{{TAB_CONTENTS}}quot;Background Worker{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;API Server{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;2. Request Data Update{{TAB_CONTENTS}}quot; {
+  style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+}
+{{TAB_CONTENTS}}quot;API Server{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Database{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;3. Fetch Latest Data{{TAB_CONTENTS}}quot; {
+  style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+}
+{{TAB_CONTENTS}}quot;Database{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;API Server{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;4. Data Records{{TAB_CONTENTS}}quot; {
+  style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+}
+{{TAB_CONTENTS}}quot;API Server{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Cache Service{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;5. Update Cache{{TAB_CONTENTS}}quot; {
+  style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+}
+{{TAB_CONTENTS}}quot;Cache Service{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;API Server{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;6. Cache Updated{{TAB_CONTENTS}}quot; {
+  style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+}
+{{TAB_CONTENTS}}quot;API Server{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Background Worker{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;7. Update Complete{{TAB_CONTENTS}}quot; {
+  style.stroke: {{TAB_CONTENTS}}quot;#4caf50{{TAB_CONTENTS}}quot;
+  style.stroke-width: 2
+}
+{{TAB_CONTENTS}}quot;Background Worker{{TAB_CONTENTS}}quot; -{{TAB_CONTENTS}}gt; {{TAB_CONTENTS}}quot;Job Scheduler{{TAB_CONTENTS}}quot;: {{TAB_CONTENTS}}quot;8. Job Finished{{TAB_CONTENTS}}quot; {
+  style.stroke: {{TAB_CONTENTS}}quot;#2196f3{{TAB_CONTENTS}}quot;
+}</code></pre>
+  </div>
+</div>
+    </div>
+  </div>
+  
+  <!-- Modal for enlarged diagrams -->
+  <div id="imageModal" class="modal">
+    <span class="modal-close">&times;</span>
+    <div class="modal-content">
+      <img id="modalImage" src="" alt="">
+    </div>
+    <div id="modalCaption" class="modal-caption"></div>
+  </div>
+  
+  <script src="../assets/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sample 02: Basic Authentication Flow - seq2boxes</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+  <!-- Top Navigation Bar -->
+  <nav class="navbar">
+    <div class="navbar-content">
+      <div class="navbar-left">
+        <a href="../" class="nav-back">← Samples</a>
+        <span class="nav-separator">|</span>
+        <h1 class="nav-title">Sample 02: Basic Authentication Flow</h1>
+      </div>
+      <div class="navbar-right">
+        <div class="view-toggle-nav">
+          <span>Diagram</span>
+          <label class="switch">
+            <input type="checkbox" class="view-toggle-global">
+            <span class="slider"></span>
+          </label>
+          <span>Code</span>
+        </div>
+      </div>
+    </div>
+  </nav>
+  
+  <div class="main-container">
+    <div class="description-bar">
+      A typical authentication flow with four actors: User, Web Application, Auth Service, and Database
+    </div>
+    
+    <div class="tabs">
+      <button class="tab active" data-target="tab-original">Original</button>
+<button class="tab" data-target="tab-default">Default</button>
+<button class="tab" data-target="tab-simple">Simple Arrows</button>
+<button class="tab" data-target="tab-vanilla">Vanilla Theme</button>
+    </div>
+    
+    <div class="tab-contents">
+      <div id="tab-original" class="tab-content">
+  <div class="diagram-container">
+    <img src="build/auth-flow.svg" alt="Original Sequence Diagram">
+  </div>
+  <div class="code-container hidden">
+    <div class="code-header">
+      <span>Original D2 Sequence Diagram</span>
+      <button class="copy-button">Copy</button>
+    </div>
+    <pre><code>shape: sequence_diagram
+user: User
+app: Web Application
+auth: Auth Service
+db: Database
+
+user -&gt; app: Login Request
+app -&gt; auth: Validate Credentials
+auth -&gt; db: Check User
+db -&gt; auth: User Data
+auth -&gt; app: Auth Token
+app -&gt; user: Login Success</code></pre>
+  </div>
+</div>
+
+<div id="tab-default" class="tab-content hidden">
+  <div class="diagram-container">
+    <img src="build/boxes-default.svg" alt="Default">
+  </div>
+  <div class="code-container hidden">
+    <div class="code-header">
+      <span>Generated D2 Code - Default</span>
+      <button class="copy-button">Copy</button>
+    </div>
+    <pre><code># Command: ./seq2boxes auth-flow.d2
+
+vars: {
+  d2-config: {
+    theme-id: 0
+  }
+}
+
+direction: right
+
+&quot;User&quot; -&gt; &quot;Web Application&quot;: &quot;1. Login Request&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}
+&quot;Web Application&quot; -&gt; &quot;Auth Service&quot;: &quot;2. Validate Credentials&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}
+&quot;Auth Service&quot; -&gt; &quot;Database&quot;: &quot;3. Check User&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}
+&quot;Database&quot; -&gt; &quot;Auth Service&quot;: &quot;4. User Data&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}
+&quot;Auth Service&quot; -&gt; &quot;Web Application&quot;: &quot;5. Auth Token&quot; {
+  style.stroke: &quot;#4caf50&quot;
+  style.stroke-width: 2
+}
+&quot;Web Application&quot; -&gt; &quot;User&quot;: &quot;6. Login Success&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}</code></pre>
+  </div>
+</div>
+
+<div id="tab-simple" class="tab-content hidden">
+  <div class="diagram-container">
+    <img src="build/boxes-simple.svg" alt="Simple Arrows">
+  </div>
+  <div class="code-container hidden">
+    <div class="code-header">
+      <span>Generated D2 Code - Simple Arrows</span>
+      <button class="copy-button">Copy</button>
+    </div>
+    <pre><code># Command: ./seq2boxes --arrows simple auth-flow.d2
+
+vars: {
+  d2-config: {
+    theme-id: 0
+  }
+}
+
+direction: right
+
+&quot;User&quot; &lt;-&gt; &quot;Web Application&quot;
+&quot;Web Application&quot; &lt;-&gt; &quot;Auth Service&quot;
+&quot;Auth Service&quot; &lt;-&gt; &quot;Database&quot;</code></pre>
+  </div>
+</div>
+
+<div id="tab-vanilla" class="tab-content hidden">
+  <div class="diagram-container">
+    <img src="build/boxes-vanilla.svg" alt="Vanilla Theme">
+  </div>
+  <div class="code-container hidden">
+    <div class="code-header">
+      <span>Generated D2 Code - Vanilla Theme</span>
+      <button class="copy-button">Copy</button>
+    </div>
+    <pre><code># Command: ./seq2boxes --theme vanilla-nitro auth-flow.d2
+
+vars: {
+  d2-config: {
+    theme-id: 0
+  }
+}
+
+direction: right
+
+&quot;User&quot; -&gt; &quot;Web Application&quot;: &quot;1. Login Request&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}
+&quot;Web Application&quot; -&gt; &quot;Auth Service&quot;: &quot;2. Validate Credentials&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}
+&quot;Auth Service&quot; -&gt; &quot;Database&quot;: &quot;3. Check User&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}
+&quot;Database&quot; -&gt; &quot;Auth Service&quot;: &quot;4. User Data&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}
+&quot;Auth Service&quot; -&gt; &quot;Web Application&quot;: &quot;5. Auth Token&quot; {
+  style.stroke: &quot;#4caf50&quot;
+  style.stroke-width: 2
+}
+&quot;Web Application&quot; -&gt; &quot;User&quot;: &quot;6. Login Success&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}</code></pre>
+  </div>
+</div>
+    </div>
+  </div>
+  
+  <!-- Modal for enlarged diagrams -->
+  <div id="imageModal" class="modal">
+    <span class="modal-close">&times;</span>
+    <div class="modal-content">
+      <img id="modalImage" src="" alt="">
+    </div>
+    <div id="modalCaption" class="modal-caption"></div>
+  </div>
+  
+  <script src="../assets/script.js"></script>
+</body>
+</html>

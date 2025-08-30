@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sample 03: Microservices Order Processing - seq2boxes</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+  <!-- Top Navigation Bar -->
+  <nav class="navbar">
+    <div class="navbar-content">
+      <div class="navbar-left">
+        <a href="../" class="nav-back">← Samples</a>
+        <span class="nav-separator">|</span>
+        <h1 class="nav-title">Sample 03: Microservices Order Processing</h1>
+      </div>
+      <div class="navbar-right">
+        <div class="view-toggle-nav">
+          <span>Diagram</span>
+          <label class="switch">
+            <input type="checkbox" class="view-toggle-global">
+            <span class="slider"></span>
+          </label>
+          <span>Code</span>
+        </div>
+      </div>
+    </div>
+  </nav>
+  
+  <div class="main-container">
+    <div class="description-bar">
+      A complex microservices architecture for order processing, involving 8 different services and systems
+    </div>
+    
+    <div class="tabs">
+      <button class="tab active" data-target="tab-original">Original</button>
+<button class="tab" data-target="tab-default">Default</button>
+<button class="tab" data-target="tab-simple">Simple Arrows</button>
+<button class="tab" data-target="tab-cool">Cool Theme</button>
+    </div>
+    
+    <div class="tab-contents">
+      <div id="tab-original" class="tab-content">
+  <div class="diagram-container">
+    <img src="build/order-processing.svg" alt="Original Sequence Diagram">
+  </div>
+  <div class="code-container hidden">
+    <div class="code-header">
+      <span>Original D2 Sequence Diagram</span>
+      <button class="copy-button">Copy</button>
+    </div>
+    <pre><code>shape: sequence_diagram
+customer: Customer
+api-gateway: API Gateway
+order-service: Order Service
+inventory-service: Inventory Service
+payment-service: Payment Service
+shipping-service: Shipping Service
+notification-service: Notification Service
+warehouse: Warehouse System
+
+customer -&gt; api-gateway: Place Order
+api-gateway -&gt; order-service: Create Order Request
+order-service -&gt; inventory-service: Check Stock Availability
+inventory-service -&gt; warehouse: Query Stock Levels
+warehouse -&gt; inventory-service: Stock Status
+inventory-service -&gt; order-service: Stock Confirmed
+order-service -&gt; payment-service: Process Payment
+payment-service -&gt; order-service: Payment Successful
+order-service -&gt; inventory-service: Reserve Items
+inventory-service -&gt; order-service: Items Reserved
+order-service -&gt; shipping-service: Schedule Delivery
+shipping-service -&gt; warehouse: Prepare Shipment
+warehouse -&gt; shipping-service: Shipment Ready
+shipping-service -&gt; order-service: Delivery Scheduled
+order-service -&gt; notification-service: Send Confirmation
+notification-service -&gt; customer: Order Confirmation Email
+order-service -&gt; api-gateway: Order Created Response
+api-gateway -&gt; customer: Order Confirmation</code></pre>
+  </div>
+</div>
+
+<div id="tab-default" class="tab-content hidden">
+  <div class="diagram-container">
+    <img src="build/boxes-default.svg" alt="Default">
+  </div>
+  <div class="code-container hidden">
+    <div class="code-header">
+      <span>Generated D2 Code - Default</span>
+      <button class="copy-button">Copy</button>
+    </div>
+    <pre><code># Command: ./seq2boxes order-processing.d2
+
+vars: {
+  d2-config: {
+    theme-id: 0
+  }
+}
+
+direction: right
+
+&quot;Customer&quot; -&gt; &quot;API Gateway&quot;: &quot;1. Place Order&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}
+&quot;API Gateway&quot; -&gt; &quot;Order Service&quot;: &quot;2. Create Order Request&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}
+&quot;Order Service&quot; -&gt; &quot;Inventory Service&quot;: &quot;3. Check Stock Availability&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}
+&quot;Inventory Service&quot; -&gt; &quot;Warehouse System&quot;: &quot;4. Query Stock Levels&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}
+&quot;Warehouse System&quot; -&gt; &quot;Inventory Service&quot;: &quot;5. Stock Status&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}
+&quot;Inventory Service&quot; -&gt; &quot;Order Service&quot;: &quot;6. Stock Confirmed&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}
+&quot;Order Service&quot; -&gt; &quot;Payment Service&quot;: &quot;7. Process Payment&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}
+&quot;Payment Service&quot; -&gt; &quot;Order Service&quot;: &quot;8. Payment Successful&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}
+&quot;Order Service&quot; -&gt; &quot;Inventory Service&quot;: &quot;9. Reserve Items&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}
+&quot;Inventory Service&quot; -&gt; &quot;Order Service&quot;: &quot;10. Items Reserved&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}
+&quot;Order Service&quot; -&gt; &quot;Shipping Service&quot;: &quot;11. Schedule Delivery&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}
+&quot;Shipping Service&quot; -&gt; &quot;Warehouse System&quot;: &quot;12. Prepare Shipment&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}
+&quot;Warehouse System&quot; -&gt; &quot;Shipping Service&quot;: &quot;13. Shipment Ready&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}
+&quot;Shipping Service&quot; -&gt; &quot;Order Service&quot;: &quot;14. Delivery Scheduled&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}
+&quot;Order Service&quot; -&gt; &quot;Notification Service&quot;: &quot;15. Send Confirmation&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}
+&quot;Notification Service&quot; -&gt; &quot;Customer&quot;: &quot;16. Order Confirmation Email&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}
+&quot;Order Service&quot; -&gt; &quot;API Gateway&quot;: &quot;17. Order Created Response&quot; {
+  style.stroke: &quot;#4caf50&quot;
+  style.stroke-width: 2
+}
+&quot;API Gateway&quot; -&gt; &quot;Customer&quot;: &quot;18. Order Confirmation&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}</code></pre>
+  </div>
+</div>
+
+<div id="tab-simple" class="tab-content hidden">
+  <div class="diagram-container">
+    <img src="build/boxes-simple.svg" alt="Simple Arrows">
+  </div>
+  <div class="code-container hidden">
+    <div class="code-header">
+      <span>Generated D2 Code - Simple Arrows</span>
+      <button class="copy-button">Copy</button>
+    </div>
+    <pre><code># Command: ./seq2boxes --arrows simple order-processing.d2
+
+vars: {
+  d2-config: {
+    theme-id: 0
+  }
+}
+
+direction: right
+
+&quot;Customer&quot; &lt;-&gt; &quot;API Gateway&quot;
+&quot;API Gateway&quot; &lt;-&gt; &quot;Order Service&quot;
+&quot;Order Service&quot; &lt;-&gt; &quot;Inventory Service&quot;
+&quot;Inventory Service&quot; &lt;-&gt; &quot;Warehouse System&quot;
+&quot;Order Service&quot; &lt;-&gt; &quot;Payment Service&quot;
+&quot;Order Service&quot; &lt;-&gt; &quot;Shipping Service&quot;
+&quot;Shipping Service&quot; &lt;-&gt; &quot;Warehouse System&quot;
+&quot;Order Service&quot; &lt;-&gt; &quot;Notification Service&quot;
+&quot;Notification Service&quot; &lt;-&gt; &quot;Customer&quot;</code></pre>
+  </div>
+</div>
+
+<div id="tab-cool" class="tab-content hidden">
+  <div class="diagram-container">
+    <img src="build/boxes-cool.svg" alt="Cool Theme">
+  </div>
+  <div class="code-container hidden">
+    <div class="code-header">
+      <span>Generated D2 Code - Cool Theme</span>
+      <button class="copy-button">Copy</button>
+    </div>
+    <pre><code># Command: ./seq2boxes --theme cool-classics order-processing.d2
+
+vars: {
+  d2-config: {
+    theme-id: 4
+  }
+}
+
+direction: right
+
+&quot;Customer&quot; -&gt; &quot;API Gateway&quot;: &quot;1. Place Order&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}
+&quot;API Gateway&quot; -&gt; &quot;Order Service&quot;: &quot;2. Create Order Request&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}
+&quot;Order Service&quot; -&gt; &quot;Inventory Service&quot;: &quot;3. Check Stock Availability&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}
+&quot;Inventory Service&quot; -&gt; &quot;Warehouse System&quot;: &quot;4. Query Stock Levels&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}
+&quot;Warehouse System&quot; -&gt; &quot;Inventory Service&quot;: &quot;5. Stock Status&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}
+&quot;Inventory Service&quot; -&gt; &quot;Order Service&quot;: &quot;6. Stock Confirmed&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}
+&quot;Order Service&quot; -&gt; &quot;Payment Service&quot;: &quot;7. Process Payment&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}
+&quot;Payment Service&quot; -&gt; &quot;Order Service&quot;: &quot;8. Payment Successful&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}
+&quot;Order Service&quot; -&gt; &quot;Inventory Service&quot;: &quot;9. Reserve Items&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}
+&quot;Inventory Service&quot; -&gt; &quot;Order Service&quot;: &quot;10. Items Reserved&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}
+&quot;Order Service&quot; -&gt; &quot;Shipping Service&quot;: &quot;11. Schedule Delivery&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}
+&quot;Shipping Service&quot; -&gt; &quot;Warehouse System&quot;: &quot;12. Prepare Shipment&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}
+&quot;Warehouse System&quot; -&gt; &quot;Shipping Service&quot;: &quot;13. Shipment Ready&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}
+&quot;Shipping Service&quot; -&gt; &quot;Order Service&quot;: &quot;14. Delivery Scheduled&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}
+&quot;Order Service&quot; -&gt; &quot;Notification Service&quot;: &quot;15. Send Confirmation&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}
+&quot;Notification Service&quot; -&gt; &quot;Customer&quot;: &quot;16. Order Confirmation Email&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}
+&quot;Order Service&quot; -&gt; &quot;API Gateway&quot;: &quot;17. Order Created Response&quot; {
+  style.stroke: &quot;#4caf50&quot;
+  style.stroke-width: 2
+}
+&quot;API Gateway&quot; -&gt; &quot;Customer&quot;: &quot;18. Order Confirmation&quot; {
+  style.stroke: &quot;#2196f3&quot;
+}</code></pre>
+  </div>
+</div>
+    </div>
+  </div>
+  
+  <!-- Modal for enlarged diagrams -->
+  <div id="imageModal" class="modal">
+    <span class="modal-close">&times;</span>
+    <div class="modal-content">
+      <img id="modalImage" src="" alt="">
+    </div>
+    <div id="modalCaption" class="modal-caption"></div>
+  </div>
+  
+  <script src="../assets/script.js"></script>
+</body>
+</html>
