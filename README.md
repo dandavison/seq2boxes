@@ -21,6 +21,8 @@ cat sequence.d2 | ./seq2boxes -
 - `--layout`: vertical (default) or horizontal
 - `--arrows`: simple or detailed (default)
 - `--theme`: D2 theme name
+- `--no-labels`: Remove all message labels
+- `--no-groups`: Remove grouping containers (Infrastructure, External, etc.)
 - `--verbose`: Verbose output to stderr
 
 ## Examples
@@ -37,6 +39,9 @@ cat sequence.d2 | ./seq2boxes -
 
 # From stdin with terminal theme
 cat diagram.d2 | ./seq2boxes --theme terminal -
+
+# Clean diagram without groups or labels
+./seq2boxes --no-groups --no-labels diagram.d2
 
 # Save to file
 ./seq2boxes diagram.d2 > output.d2
