@@ -50,19 +50,32 @@ ORIGINAL_DIAGRAM='<img src="build/auth-flow.svg" alt="Original Sequence Diagram"
 ORIGINAL_CODE=$(cat auth-flow.d2 | escape_html)
 
 # Build tabs
-TABS='<button class="tab active" data-target="tab-default">Default</button>
+TABS='<button class="tab active" data-target="tab-horizontal">Horizontal</button>
+<button class="tab" data-target="tab-default">Vertical</button>
 <button class="tab" data-target="tab-simple">Simple Arrows</button>
-<button class="tab" data-target="tab-horizontal">Horizontal</button>
 <button class="tab" data-target="tab-vanilla">Vanilla Theme</button>'
 
 # Build tab contents
-TAB_CONTENTS='<div id="tab-default" class="tab-content">
+TAB_CONTENTS='<div id="tab-horizontal" class="tab-content">
   <div class="diagram-container">
-    <img src="build/boxes-default.svg" alt="Default Transformation">
+    <img src="build/boxes-horizontal.svg" alt="Horizontal Layout">
   </div>
   <div class="code-container hidden">
     <div class="code-header">
-      <span>Generated D2 Code - Default</span>
+      <span>Generated D2 Code - Horizontal Layout</span>
+      <button class="copy-button">Copy</button>
+    </div>
+    <pre><code>'$(cat build/boxes-horizontal.d2 | escape_html)'</code></pre>
+  </div>
+</div>
+
+<div id="tab-default" class="tab-content hidden">
+  <div class="diagram-container">
+    <img src="build/boxes-default.svg" alt="Vertical Layout">
+  </div>
+  <div class="code-container hidden">
+    <div class="code-header">
+      <span>Generated D2 Code - Vertical Layout</span>
       <button class="copy-button">Copy</button>
     </div>
     <pre><code>'$(cat build/boxes-default.d2 | escape_html)'</code></pre>
@@ -79,19 +92,6 @@ TAB_CONTENTS='<div id="tab-default" class="tab-content">
       <button class="copy-button">Copy</button>
     </div>
     <pre><code>'$(cat build/boxes-simple.d2 | escape_html)'</code></pre>
-  </div>
-</div>
-
-<div id="tab-horizontal" class="tab-content hidden">
-  <div class="diagram-container">
-    <img src="build/boxes-horizontal.svg" alt="Horizontal Layout">
-  </div>
-  <div class="code-container hidden">
-    <div class="code-header">
-      <span>Generated D2 Code - Horizontal Layout</span>
-      <button class="copy-button">Copy</button>
-    </div>
-    <pre><code>'$(cat build/boxes-horizontal.d2 | escape_html)'</code></pre>
   </div>
 </div>
 

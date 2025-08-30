@@ -78,19 +78,19 @@ DESCRIPTION="Real-world Nexus sequence diagrams demonstrating seq2boxes on compl
 ORIGINAL_CODE=$(cat build/combined-original.d2 | escape_html)
 
 # Build tabs
-TABS=$(make_tab "a2a" "A2A Only" "true")$'\n'
-TABS+=$(make_tab "mcp" "MCP Only" "false")$'\n'
-TABS+=$(make_tab "combined" "Combined" "false")$'\n'
+TABS=$(make_tab "horizontal" "Horizontal" "true")$'\n'
+TABS+=$(make_tab "combined" "Vertical Combined" "false")$'\n'
 TABS+=$(make_tab "simple" "Simple Arrows" "false")$'\n'
-TABS+=$(make_tab "horizontal" "Horizontal" "false")$'\n'
+TABS+=$(make_tab "a2a" "A2A Only" "false")$'\n'
+TABS+=$(make_tab "mcp" "MCP Only" "false")$'\n'
 TABS+=$(make_tab "flagship" "Flagship Theme" "false")
 
 # Build tab contents
-TAB_CONTENTS=$(make_tab_content "a2a" "A2A Boxes and Arrows" "build/boxes-a2a.svg" "build/boxes-a2a.d2" "true")$'\n\n'
-TAB_CONTENTS+=$(make_tab_content "mcp" "MCP Boxes and Arrows" "build/boxes-mcp.svg" "build/boxes-mcp.d2" "false")$'\n\n'
-TAB_CONTENTS+=$(make_tab_content "combined" "Combined Default" "build/boxes-combined.svg" "build/boxes-combined.d2" "false")$'\n\n'
+TAB_CONTENTS=$(make_tab_content "horizontal" "Combined Horizontal" "build/boxes-combined-horizontal.svg" "build/boxes-combined-horizontal.d2" "true")$'\n\n'
+TAB_CONTENTS+=$(make_tab_content "combined" "Combined Vertical" "build/boxes-combined.svg" "build/boxes-combined.d2" "false")$'\n\n'
 TAB_CONTENTS+=$(make_tab_content "simple" "Combined Simple Arrows" "build/boxes-combined-simple.svg" "build/boxes-combined-simple.d2" "false")$'\n\n'
-TAB_CONTENTS+=$(make_tab_content "horizontal" "Combined Horizontal" "build/boxes-combined-horizontal.svg" "build/boxes-combined-horizontal.d2" "false")$'\n\n'
+TAB_CONTENTS+=$(make_tab_content "a2a" "A2A Boxes and Arrows" "build/boxes-a2a.svg" "build/boxes-a2a.d2" "false")$'\n\n'
+TAB_CONTENTS+=$(make_tab_content "mcp" "MCP Boxes and Arrows" "build/boxes-mcp.svg" "build/boxes-mcp.d2" "false")$'\n\n'
 TAB_CONTENTS+=$(make_tab_content "flagship" "Flagship Theme" "build/boxes-combined-flagship.svg" "build/boxes-combined-flagship.d2" "false")
 
 # Replace placeholders in template

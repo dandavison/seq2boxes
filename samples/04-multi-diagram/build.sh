@@ -72,16 +72,16 @@ DESCRIPTION="Demonstrates how seq2boxes handles multiple input sequence diagrams
 ORIGINAL_CODE=$(cat build/combined-original.d2 | escape_html)
 
 # Build tabs
-TABS=$(make_tab "combined" "Combined" "true")$'\n'
+TABS=$(make_tab "horizontal" "Horizontal" "true")$'\n'
+TABS+=$(make_tab "combined" "Vertical Combined" "false")$'\n'
 TABS+=$(make_tab "simple" "Simple Arrows" "false")$'\n'
-TABS+=$(make_tab "horizontal" "Horizontal" "false")$'\n'
 TABS+=$(make_tab "frontend" "Frontend Only" "false")$'\n'
 TABS+=$(make_tab "backend" "Backend Only" "false")
 
 # Build tab contents
-TAB_CONTENTS=$(make_tab_content "combined" "Combined Default" "build/boxes-combined.svg" "build/boxes-combined.d2" "true")$'\n\n'
+TAB_CONTENTS=$(make_tab_content "horizontal" "Combined Horizontal" "build/boxes-combined-horizontal.svg" "build/boxes-combined-horizontal.d2" "true")$'\n\n'
+TAB_CONTENTS+=$(make_tab_content "combined" "Combined Vertical" "build/boxes-combined.svg" "build/boxes-combined.d2" "false")$'\n\n'
 TAB_CONTENTS+=$(make_tab_content "simple" "Combined Simple Arrows" "build/boxes-combined-simple.svg" "build/boxes-combined-simple.d2" "false")$'\n\n'
-TAB_CONTENTS+=$(make_tab_content "horizontal" "Combined Horizontal" "build/boxes-combined-horizontal.svg" "build/boxes-combined-horizontal.d2" "false")$'\n\n'
 TAB_CONTENTS+=$(make_tab_content "frontend" "Frontend Only" "build/boxes-frontend-only.svg" "build/boxes-frontend-only.d2" "false")$'\n\n'
 TAB_CONTENTS+=$(make_tab_content "backend" "Backend Only" "build/boxes-backend-only.svg" "build/boxes-backend-only.d2" "false")
 

@@ -7,24 +7,33 @@
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 <body>
-  <header class="header">
-    <h1>{{TITLE}}</h1>
-    <div class="subtitle">{{DESCRIPTION}}</div>
-  </header>
-  
-  <div class="container">
-    <!-- Left Panel: Original Sequence Diagram -->
-    <div class="panel left">
-      <div class="panel-header">
-        <h2 class="panel-title">Original Sequence Diagram</h2>
-        <div class="toggle-switch">
+  <!-- Top Navigation Bar -->
+  <nav class="navbar">
+    <div class="navbar-content">
+      <div class="navbar-left">
+        <a href="../" class="nav-back">← Samples</a>
+        <span class="nav-separator">|</span>
+        <h1 class="nav-title">{{TITLE}}</h1>
+      </div>
+      <div class="navbar-right">
+        <div class="view-toggle-nav">
           <span>Diagram</span>
           <label class="switch">
-            <input type="checkbox" class="view-toggle">
+            <input type="checkbox" class="view-toggle-global">
             <span class="slider"></span>
           </label>
           <span>Code</span>
         </div>
+      </div>
+    </div>
+  </nav>
+  
+  <div class="main-container">
+    <!-- Top Panel: Original Sequence Diagram -->
+    <div class="panel top-panel">
+      <div class="panel-header">
+        <h2 class="panel-title">Original Sequence Diagram</h2>
+        <div class="subtitle">{{DESCRIPTION}}</div>
       </div>
       
       <div class="content">
@@ -41,18 +50,10 @@
       </div>
     </div>
     
-    <!-- Right Panel: Transformations -->
-    <div class="panel right">
+    <!-- Bottom Panel: Transformations -->
+    <div class="panel bottom-panel">
       <div class="panel-header">
         <h2 class="panel-title">Transformations</h2>
-        <div class="toggle-switch">
-          <span>Diagram</span>
-          <label class="switch">
-            <input type="checkbox" class="view-toggle">
-            <span class="slider"></span>
-          </label>
-          <span>Code</span>
-        </div>
       </div>
       
       <div class="tabs">
@@ -63,6 +64,15 @@
         {{TAB_CONTENTS}}
       </div>
     </div>
+  </div>
+  
+  <!-- Modal for enlarged diagrams -->
+  <div id="imageModal" class="modal">
+    <span class="modal-close">&times;</span>
+    <div class="modal-content">
+      <img id="modalImage" src="" alt="">
+    </div>
+    <div id="modalCaption" class="modal-caption"></div>
   </div>
   
   <script src="../assets/script.js"></script>

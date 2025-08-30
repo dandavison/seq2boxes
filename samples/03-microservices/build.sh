@@ -41,9 +41,9 @@ generate_html \
     "A complex microservices architecture for order processing, involving 8 different services and systems" \
     "build/order-processing.svg" \
     "order-processing.d2" \
-    "default" "Default" "build/boxes-default.svg" "build/boxes-default.d2" \
-    "simple" "Simple Arrows" "build/boxes-simple.svg" "build/boxes-simple.d2" \
     "horizontal" "Horizontal" "build/boxes-horizontal.svg" "build/boxes-horizontal.d2" \
+    "default" "Vertical" "build/boxes-default.svg" "build/boxes-default.d2" \
+    "simple" "Simple Arrows" "build/boxes-simple.svg" "build/boxes-simple.d2" \
     "cool" "Cool Theme" "build/boxes-cool.svg" "build/boxes-cool.d2" \
     > index.html
 
