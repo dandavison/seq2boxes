@@ -11,15 +11,11 @@ func convertToBoxesAndArrows(seqDiagram *SequenceDiagram, config Config) (string
 	// Add D2 configuration
 	writeD2Config(&builder, config)
 
-	// Create actor boxes
-	actorGroups := createActorGroups(seqDiagram.Actors)
-	writeActorGroups(&builder, actorGroups, config)
-
-	// Create message arrows
+	// Create message arrows - actors will be created implicitly
 	if config.ArrowMode == "simple" {
-		writeSimpleArrows(&builder, seqDiagram.Messages)
+		writeSimpleArrowsWithActorLabels(&builder, seqDiagram.Messages, seqDiagram.Actors)
 	} else {
-		writeDetailedArrows(&builder, seqDiagram.Messages)
+		writeDetailedArrowsWithActorLabels(&builder, seqDiagram.Messages, seqDiagram.Actors)
 	}
 
 	return builder.String(), nil
@@ -31,12 +27,8 @@ func convertMultipleDiagrams(diagrams []*NamedSequenceDiagram, config Config) (s
 	// Add D2 configuration
 	writeD2Config(&builder, config)
 
-	// Collect all unique actors across all diagrams
+	// Collect all unique actors for label lookup
 	allActors := collectAllActors(diagrams)
-
-	// Create actor boxes (shared across all diagrams)
-	actorGroups := createActorGroups(allActors)
-	writeActorGroups(&builder, actorGroups, config)
 
 	// Create a container for each diagram's messages
 	for i, namedDiagram := range diagrams {
@@ -51,9 +43,9 @@ func convertMultipleDiagrams(diagrams []*NamedSequenceDiagram, config Config) (s
 
 		// Write messages for this diagram
 		if config.ArrowMode == "simple" {
-			writeSimpleArrowsWithPrefix(&builder, adjustedMessages, "  ")
+			writeSimpleArrowsWithActorLabelsAndPrefix(&builder, adjustedMessages, allActors, "  ")
 		} else {
-			writeDetailedArrowsWithPrefix(&builder, adjustedMessages, "  ")
+			writeDetailedArrowsWithActorLabelsAndPrefix(&builder, adjustedMessages, allActors, "  ")
 		}
 
 		builder.WriteString("}\n")
@@ -182,19 +174,9 @@ func createActorGroups(actors []Actor) map[string][]Actor {
 	return groups
 }
 
-func writeActorGroups(builder *strings.Builder, groups map[string][]Actor, config Config) {
-	for groupName, actors := range groups {
-		if groupName != "" {
-			builder.WriteString(fmt.Sprintf("\"%s\": {\n", groupName))
-		}
-
-		for _, actor := range actors {
-			writeActor(builder, actor, groupName != "")
-		}
-
-		if groupName != "" {
-			builder.WriteString("}\n\n")
-		}
+func writeActors(builder *strings.Builder, actors []Actor) {
+	for _, actor := range actors {
+		writeActor(builder, actor, false)
 	}
 }
 
@@ -253,9 +235,34 @@ func escapeD2String(s string) string {
 	return fmt.Sprintf("\"%s\"", s)
 }
 
-func writeSimpleArrows(builder *strings.Builder, messages []Message) {
-	builder.WriteString("\n# Messages (simplified)\n")
-	writeSimpleArrowsWithPrefix(builder, messages, "")
+func writeSimpleArrowsWithActorLabels(builder *strings.Builder, messages []Message, actors []Actor) {
+	// Create actor lookup map
+	actorMap := make(map[string]string)
+	for _, actor := range actors {
+		actorMap[actor.ID] = actor.Label
+	}
+
+	// Create a single arrow between each pair of actors that communicate
+	connections := make(map[string]bool)
+
+	for _, msg := range messages {
+		fromLabel := actorMap[msg.From]
+		if fromLabel == "" {
+			fromLabel = msg.From
+		}
+		toLabel := actorMap[msg.To]
+		if toLabel == "" {
+			toLabel = msg.To
+		}
+
+		key := fmt.Sprintf("%s->%s", fromLabel, toLabel)
+		reverseKey := fmt.Sprintf("%s->%s", toLabel, fromLabel)
+
+		if !connections[key] && !connections[reverseKey] {
+			builder.WriteString(fmt.Sprintf("\"%s\" <-> \"%s\"\n", fromLabel, toLabel))
+			connections[key] = true
+		}
+	}
 }
 
 func writeSimpleArrowsWithPrefix(builder *strings.Builder, messages []Message, prefix string) {
@@ -275,9 +282,44 @@ func writeSimpleArrowsWithPrefix(builder *strings.Builder, messages []Message, p
 	}
 }
 
-func writeDetailedArrows(builder *strings.Builder, messages []Message) {
-	builder.WriteString("\n# Messages (detailed with sequence numbers)\n")
-	writeDetailedArrowsWithPrefix(builder, messages, "")
+func writeDetailedArrowsWithActorLabels(builder *strings.Builder, messages []Message, actors []Actor) {
+	// Create actor lookup map
+	actorMap := make(map[string]string)
+	for _, actor := range actors {
+		actorMap[actor.ID] = actor.Label
+	}
+
+	// Analyze message patterns
+	returnMessages := analyzeReturnMessages(messages)
+
+	for _, msg := range messages {
+		fromLabel := actorMap[msg.From]
+		if fromLabel == "" {
+			fromLabel = msg.From
+		}
+		toLabel := actorMap[msg.To]
+		if toLabel == "" {
+			toLabel = msg.To
+		}
+		label := formatMessageLabel(msg)
+
+		// Determine if this is a return message
+		isReturn := returnMessages[msg.Index]
+
+		builder.WriteString(fmt.Sprintf("\"%s\" -> \"%s\": \"%s\"", fromLabel, toLabel, label))
+
+		// Add styling
+		if isReturn {
+			builder.WriteString(" {\n")
+			builder.WriteString("  style.stroke: \"#4caf50\"\n")
+			builder.WriteString("  style.stroke-width: 2\n")
+			builder.WriteString("}\n")
+		} else {
+			builder.WriteString(" {\n")
+			builder.WriteString("  style.stroke: \"#2196f3\"\n")
+			builder.WriteString("}\n")
+		}
+	}
 }
 
 func writeDetailedArrowsWithPrefix(builder *strings.Builder, messages []Message, prefix string) {
@@ -331,6 +373,76 @@ func formatMessageLabel(msg Message) string {
 	label = strings.ReplaceAll(label, "\"", "\\\"")
 	label = strings.ReplaceAll(label, "\n", "\\n")
 	return fmt.Sprintf("%d. %s", msg.Index, label)
+}
+
+func writeSimpleArrowsWithActorLabelsAndPrefix(builder *strings.Builder, messages []Message, actors []Actor, prefix string) {
+	// Create actor lookup map
+	actorMap := make(map[string]string)
+	for _, actor := range actors {
+		actorMap[actor.ID] = actor.Label
+	}
+
+	// Create a single arrow between each pair of actors that communicate
+	connections := make(map[string]bool)
+
+	for _, msg := range messages {
+		fromLabel := actorMap[msg.From]
+		if fromLabel == "" {
+			fromLabel = msg.From
+		}
+		toLabel := actorMap[msg.To]
+		if toLabel == "" {
+			toLabel = msg.To
+		}
+
+		key := fmt.Sprintf("%s->%s", fromLabel, toLabel)
+		reverseKey := fmt.Sprintf("%s->%s", toLabel, fromLabel)
+
+		if !connections[key] && !connections[reverseKey] {
+			builder.WriteString(fmt.Sprintf("%s\"%s\" <-> \"%s\"\n", prefix, fromLabel, toLabel))
+			connections[key] = true
+		}
+	}
+}
+
+func writeDetailedArrowsWithActorLabelsAndPrefix(builder *strings.Builder, messages []Message, actors []Actor, prefix string) {
+	// Create actor lookup map
+	actorMap := make(map[string]string)
+	for _, actor := range actors {
+		actorMap[actor.ID] = actor.Label
+	}
+
+	// Analyze message patterns
+	returnMessages := analyzeReturnMessages(messages)
+
+	for _, msg := range messages {
+		fromLabel := actorMap[msg.From]
+		if fromLabel == "" {
+			fromLabel = msg.From
+		}
+		toLabel := actorMap[msg.To]
+		if toLabel == "" {
+			toLabel = msg.To
+		}
+		label := formatMessageLabel(msg)
+
+		// Determine if this is a return message
+		isReturn := returnMessages[msg.Index]
+
+		builder.WriteString(fmt.Sprintf("%s\"%s\" -> \"%s\": \"%s\"", prefix, fromLabel, toLabel, label))
+
+		// Add styling
+		if isReturn {
+			builder.WriteString(" {\n")
+			builder.WriteString(fmt.Sprintf("%s  style.stroke: \"#4caf50\"\n", prefix))
+			builder.WriteString(fmt.Sprintf("%s  style.stroke-width: 2\n", prefix))
+			builder.WriteString(fmt.Sprintf("%s}\n", prefix))
+		} else {
+			builder.WriteString(" {\n")
+			builder.WriteString(fmt.Sprintf("%s  style.stroke: \"#2196f3\"\n", prefix))
+			builder.WriteString(fmt.Sprintf("%s}\n", prefix))
+		}
+	}
 }
 
 func analyzeReturnMessages(messages []Message) map[int]bool {
