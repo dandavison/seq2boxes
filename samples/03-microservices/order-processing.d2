@@ -1,0 +1,28 @@
+shape: sequence_diagram
+customer: Customer
+api-gateway: API Gateway
+order-service: Order Service
+inventory-service: Inventory Service
+payment-service: Payment Service
+shipping-service: Shipping Service
+notification-service: Notification Service
+warehouse: Warehouse System
+
+customer -> api-gateway: Place Order
+api-gateway -> order-service: Create Order Request
+order-service -> inventory-service: Check Stock Availability
+inventory-service -> warehouse: Query Stock Levels
+warehouse -> inventory-service: Stock Status
+inventory-service -> order-service: Stock Confirmed
+order-service -> payment-service: Process Payment
+payment-service -> order-service: Payment Successful
+order-service -> inventory-service: Reserve Items
+inventory-service -> order-service: Items Reserved
+order-service -> shipping-service: Schedule Delivery
+shipping-service -> warehouse: Prepare Shipment
+warehouse -> shipping-service: Shipment Ready
+shipping-service -> order-service: Delivery Scheduled
+order-service -> notification-service: Send Confirmation
+notification-service -> customer: Order Confirmation Email
+order-service -> api-gateway: Order Created Response
+api-gateway -> customer: Order Confirmation

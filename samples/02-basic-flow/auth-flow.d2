@@ -1,0 +1,12 @@
+shape: sequence_diagram
+user: User
+app: Web Application
+auth: Auth Service
+db: Database
+
+user -> app: Login Request
+app -> auth: Validate Credentials
+auth -> db: Check User
+db -> auth: User Data
+auth -> app: Auth Token
+app -> user: Login Success

@@ -1,0 +1,15 @@
+shape: sequence_diagram
+scheduler: Job Scheduler
+worker: Background Worker
+api: API Server
+cache: Cache Service
+database: Database
+
+scheduler -> worker: Trigger Sync Job
+worker -> api: Request Data Update
+api -> database: Fetch Latest Data
+database -> api: Data Records
+api -> cache: Update Cache
+cache -> api: Cache Updated
+api -> worker: Update Complete
+worker -> scheduler: Job Finished

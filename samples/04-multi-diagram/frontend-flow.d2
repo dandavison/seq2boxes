@@ -1,0 +1,12 @@
+shape: sequence_diagram
+browser: Browser
+frontend: Frontend App
+api: API Server
+cache: Cache Service
+
+browser -> frontend: Load Page
+frontend -> api: Get User Data
+api -> cache: Check Cache
+cache -> api: Cache Miss
+api -> frontend: User Data
+frontend -> browser: Render Page
