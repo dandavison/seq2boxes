@@ -25,6 +25,11 @@ type Message struct {
 	Index int
 }
 
+type NamedSequenceDiagram struct {
+	Name    string
+	Diagram *SequenceDiagram
+}
+
 func parseSequenceDiagram(input string) (*SequenceDiagram, error) {
 	// Compile the D2 diagram
 	graph, _, err := d2compiler.Compile("", strings.NewReader(input), nil)
@@ -99,13 +104,17 @@ func extractActors(graph *d2graph.Graph) []Actor {
 
 	// Also check edges to find actors
 	for _, edge := range graph.Edges {
-		srcID := edge.Src.ID
-		dstID := edge.Dst.ID
+		srcID := extractActorFromSequenceID(edge.Src.ID)
+		dstID := extractActorFromSequenceID(edge.Dst.ID)
 
 		if !seen[srcID] {
-			label := edge.Src.Label.Value
-			if label == "" {
-				label = srcID
+			// Try to find the actual actor object for label
+			label := srcID
+			for _, obj := range graph.Objects {
+				if obj.ID == srcID && obj.Label.Value != "" {
+					label = obj.Label.Value
+					break
+				}
 			}
 			actors = append(actors, Actor{
 				ID:    srcID,
@@ -115,9 +124,13 @@ func extractActors(graph *d2graph.Graph) []Actor {
 		}
 
 		if !seen[dstID] {
-			label := edge.Dst.Label.Value
-			if label == "" {
-				label = dstID
+			// Try to find the actual actor object for label
+			label := dstID
+			for _, obj := range graph.Objects {
+				if obj.ID == dstID && obj.Label.Value != "" {
+					label = obj.Label.Value
+					break
+				}
 			}
 			actors = append(actors, Actor{
 				ID:    dstID,
@@ -140,12 +153,21 @@ func extractMessages(graph *d2graph.Graph) []Message {
 		}
 
 		messages = append(messages, Message{
-			From:  edge.Src.ID,
-			To:    edge.Dst.ID,
+			From:  extractActorFromSequenceID(edge.Src.ID),
+			To:    extractActorFromSequenceID(edge.Dst.ID),
 			Label: label,
 			Index: i + 1,
 		})
 	}
 
 	return messages
+}
+
+// extractActorFromSequenceID extracts the actor ID from a sequence diagram reference
+// e.g., "w.1" -> "w", "actor.2" -> "actor"
+func extractActorFromSequenceID(id string) string {
+	if idx := strings.Index(id, "."); idx > 0 {
+		return id[:idx]
+	}
+	return id
 }

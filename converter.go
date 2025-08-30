@@ -25,6 +25,93 @@ func convertToBoxesAndArrows(seqDiagram *SequenceDiagram, config Config) (string
 	return builder.String(), nil
 }
 
+func convertMultipleDiagrams(diagrams []*NamedSequenceDiagram, config Config) (string, error) {
+	var builder strings.Builder
+
+	// Add D2 configuration
+	writeD2Config(&builder, config)
+
+	// Collect all unique actors across all diagrams
+	allActors := collectAllActors(diagrams)
+
+	// Create actor boxes (shared across all diagrams)
+	actorGroups := createActorGroups(allActors)
+	writeActorGroups(&builder, actorGroups, config)
+
+	// Create a container for each diagram's messages
+	for i, namedDiagram := range diagrams {
+		diagramName := sanitizeDiagramName(namedDiagram.Name)
+		builder.WriteString(fmt.Sprintf("\n# Messages from %s\n", namedDiagram.Name))
+		builder.WriteString(fmt.Sprintf("%s: {\n", diagramName))
+		builder.WriteString("  style.fill: transparent\n")
+		builder.WriteString("  style.stroke: transparent\n")
+
+		// Adjust message indices to be unique across diagrams
+		adjustedMessages := adjustMessageIndices(namedDiagram.Diagram.Messages, i)
+
+		// Write messages for this diagram
+		if config.ArrowMode == "simple" {
+			writeSimpleArrowsWithPrefix(&builder, adjustedMessages, "  ")
+		} else {
+			writeDetailedArrowsWithPrefix(&builder, adjustedMessages, "  ")
+		}
+
+		builder.WriteString("}\n")
+	}
+
+	return builder.String(), nil
+}
+
+func collectAllActors(diagrams []*NamedSequenceDiagram) []Actor {
+	actorMap := make(map[string]Actor)
+
+	for _, d := range diagrams {
+		for _, actor := range d.Diagram.Actors {
+			// Keep the first occurrence of each actor
+			if _, exists := actorMap[actor.ID]; !exists {
+				actorMap[actor.ID] = actor
+			}
+		}
+	}
+
+	// Convert map to slice
+	var actors []Actor
+	for _, actor := range actorMap {
+		actors = append(actors, actor)
+	}
+
+	return actors
+}
+
+func sanitizeDiagramName(name string) string {
+	// Remove file extension and path
+	base := name
+	if idx := strings.LastIndex(name, "/"); idx >= 0 {
+		base = name[idx+1:]
+	}
+	if idx := strings.LastIndex(base, "."); idx >= 0 {
+		base = base[:idx]
+	}
+
+	// Replace problematic characters
+	base = strings.ReplaceAll(base, "-", "_")
+	base = strings.ReplaceAll(base, " ", "_")
+
+	return fmt.Sprintf("diagram_%s", base)
+}
+
+func adjustMessageIndices(messages []Message, diagramIndex int) []Message {
+	adjusted := make([]Message, len(messages))
+	offset := diagramIndex * 1000 // Large offset to avoid collisions
+
+	for i, msg := range messages {
+		adjusted[i] = msg
+		adjusted[i].Index = offset + msg.Index
+	}
+
+	return adjusted
+}
+
 func writeD2Config(builder *strings.Builder, config Config) {
 	builder.WriteString("vars: {\n")
 	builder.WriteString("  d2-config: {\n")
@@ -168,7 +255,10 @@ func escapeD2String(s string) string {
 
 func writeSimpleArrows(builder *strings.Builder, messages []Message) {
 	builder.WriteString("\n# Messages (simplified)\n")
+	writeSimpleArrowsWithPrefix(builder, messages, "")
+}
 
+func writeSimpleArrowsWithPrefix(builder *strings.Builder, messages []Message, prefix string) {
 	// Create a single arrow between each pair of actors that communicate
 	connections := make(map[string]bool)
 
@@ -179,7 +269,7 @@ func writeSimpleArrows(builder *strings.Builder, messages []Message) {
 		if !connections[key] && !connections[reverseKey] {
 			from := formatActorRef(msg.From)
 			to := formatActorRef(msg.To)
-			builder.WriteString(fmt.Sprintf("%s <-> %s\n", from, to))
+			builder.WriteString(fmt.Sprintf("%s%s <-> %s\n", prefix, from, to))
 			connections[key] = true
 		}
 	}
@@ -187,7 +277,10 @@ func writeSimpleArrows(builder *strings.Builder, messages []Message) {
 
 func writeDetailedArrows(builder *strings.Builder, messages []Message) {
 	builder.WriteString("\n# Messages (detailed with sequence numbers)\n")
+	writeDetailedArrowsWithPrefix(builder, messages, "")
+}
 
+func writeDetailedArrowsWithPrefix(builder *strings.Builder, messages []Message, prefix string) {
 	// Analyze message patterns
 	returnMessages := analyzeReturnMessages(messages)
 
@@ -199,18 +292,18 @@ func writeDetailedArrows(builder *strings.Builder, messages []Message) {
 		// Determine if this is a return message
 		isReturn := returnMessages[msg.Index]
 
-		builder.WriteString(fmt.Sprintf("%s -> %s: \"%s\"", from, to, label))
+		builder.WriteString(fmt.Sprintf("%s%s -> %s: \"%s\"", prefix, from, to, label))
 
 		// Add styling
 		if isReturn {
 			builder.WriteString(" {\n")
-			builder.WriteString("  style.stroke: \"#4caf50\"\n")
-			builder.WriteString("  style.stroke-width: 2\n")
-			builder.WriteString("}\n")
+			builder.WriteString(fmt.Sprintf("%s  style.stroke: \"#4caf50\"\n", prefix))
+			builder.WriteString(fmt.Sprintf("%s  style.stroke-width: 2\n", prefix))
+			builder.WriteString(fmt.Sprintf("%s}\n", prefix))
 		} else {
 			builder.WriteString(" {\n")
-			builder.WriteString("  style.stroke: \"#2196f3\"\n")
-			builder.WriteString("}\n")
+			builder.WriteString(fmt.Sprintf("%s  style.stroke: \"#2196f3\"\n", prefix))
+			builder.WriteString(fmt.Sprintf("%s}\n", prefix))
 		}
 	}
 }

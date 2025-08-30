@@ -8,11 +8,11 @@ import (
 )
 
 type Config struct {
-	InputFile string
-	Layout    string
-	ArrowMode string
-	Theme     string
-	Verbose   bool
+	InputFiles []string
+	Layout     string
+	ArrowMode  string
+	Theme      string
+	Verbose    bool
 }
 
 func main() {
@@ -35,65 +35,99 @@ func parseFlags() Config {
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "seq2boxes - Convert D2 sequence diagrams to boxes and arrows diagrams\n\n")
 		fmt.Fprintf(os.Stderr, "Usage:\n")
-		fmt.Fprintf(os.Stderr, "  %s [options] <input-file>\n", os.Args[0])
+		fmt.Fprintf(os.Stderr, "  %s [options] <input-file>...\n", os.Args[0])
 		fmt.Fprintf(os.Stderr, "  %s [options] -\n", os.Args[0])
 		fmt.Fprintf(os.Stderr, "  cat file.d2 | %s [options] -\n\n", os.Args[0])
 		fmt.Fprintf(os.Stderr, "Arguments:\n")
-		fmt.Fprintf(os.Stderr, "  <input-file>    Input D2 sequence diagram file (use '-' for stdin)\n\n")
+		fmt.Fprintf(os.Stderr, "  <input-file>    Input D2 sequence diagram file(s) (use '-' for stdin)\n")
+		fmt.Fprintf(os.Stderr, "                  Multiple files will be aligned by common actors\n\n")
 		fmt.Fprintf(os.Stderr, "Options:\n")
 		flag.PrintDefaults()
 		fmt.Fprintf(os.Stderr, "\nExamples:\n")
 		fmt.Fprintf(os.Stderr, "  %s diagram.d2\n", os.Args[0])
+		fmt.Fprintf(os.Stderr, "  %s diagram1.d2 diagram2.d2 diagram3.d2\n", os.Args[0])
 		fmt.Fprintf(os.Stderr, "  %s --layout horizontal --arrows simple diagram.d2\n", os.Args[0])
 		fmt.Fprintf(os.Stderr, "  cat diagram.d2 | %s --theme terminal -\n", os.Args[0])
 	}
 
 	flag.Parse()
 
-	// Get positional argument
+	// Get positional arguments
 	args := flag.Args()
-	if len(args) != 1 {
+	if len(args) < 1 {
 		flag.Usage()
 		os.Exit(1)
 	}
 
-	config.InputFile = args[0]
+	config.InputFiles = args
 
 	return config
 }
 
 func run(config Config) error {
 	if config.Verbose {
-		fmt.Fprintf(os.Stderr, "Converting %s\n", config.InputFile)
+		fmt.Fprintf(os.Stderr, "Converting %d diagram(s)\n", len(config.InputFiles))
 		fmt.Fprintf(os.Stderr, "Layout: %s, Arrow mode: %s\n", config.Layout, config.ArrowMode)
 	}
 
-	// Read input
-	var input []byte
-	var err error
+	// Parse all input diagrams
+	var diagrams []*NamedSequenceDiagram
 
-	if config.InputFile == "-" {
-		input, err = io.ReadAll(os.Stdin)
-		if err != nil {
-			return fmt.Errorf("failed to read from stdin: %w", err)
+	for _, inputFile := range config.InputFiles {
+		var input []byte
+		var err error
+
+		if inputFile == "-" {
+			if len(config.InputFiles) > 1 {
+				return fmt.Errorf("stdin (-) can only be used as single input")
+			}
+			input, err = io.ReadAll(os.Stdin)
+			if err != nil {
+				return fmt.Errorf("failed to read from stdin: %w", err)
+			}
+		} else {
+			input, err = os.ReadFile(inputFile)
+			if err != nil {
+				return fmt.Errorf("failed to read input file %s: %w", inputFile, err)
+			}
 		}
-	} else {
-		input, err = os.ReadFile(config.InputFile)
+
+		// Parse sequence diagram
+		seqDiagram, err := parseSequenceDiagram(string(input))
 		if err != nil {
-			return fmt.Errorf("failed to read input file: %w", err)
+			return fmt.Errorf("failed to parse sequence diagram %s: %w", inputFile, err)
+		}
+
+		diagrams = append(diagrams, &NamedSequenceDiagram{
+			Name:    inputFile,
+			Diagram: seqDiagram,
+		})
+
+		if config.Verbose {
+			fmt.Fprintf(os.Stderr, "Parsed %s: %d actors, %d messages\n",
+				inputFile, len(seqDiagram.Actors), len(seqDiagram.Messages))
 		}
 	}
 
-	// Parse sequence diagram
-	seqDiagram, err := parseSequenceDiagram(string(input))
-	if err != nil {
-		return fmt.Errorf("failed to parse sequence diagram: %w", err)
+	// Validate common actors if multiple diagrams
+	if len(diagrams) > 1 {
+		if err := validateCommonActors(diagrams); err != nil {
+			return err
+		}
 	}
 
 	// Convert to boxes and arrows
-	boxesAndArrows, err := convertToBoxesAndArrows(seqDiagram, config)
+	var boxesAndArrows string
+	var err error
+
+	if len(diagrams) == 1 {
+		boxesAndArrows, err = convertToBoxesAndArrows(diagrams[0].Diagram, config)
+	} else {
+		boxesAndArrows, err = convertMultipleDiagrams(diagrams, config)
+	}
+
 	if err != nil {
-		return fmt.Errorf("failed to convert diagram: %w", err)
+		return fmt.Errorf("failed to convert diagram(s): %w", err)
 	}
 
 	// Write to stdout
@@ -101,6 +135,37 @@ func run(config Config) error {
 
 	if config.Verbose {
 		fmt.Fprintf(os.Stderr, "Conversion complete\n")
+	}
+
+	return nil
+}
+
+func validateCommonActors(diagrams []*NamedSequenceDiagram) error {
+	// Build actor sets for each diagram
+	actorSets := make([]map[string]bool, len(diagrams))
+	for i, d := range diagrams {
+		actorSets[i] = make(map[string]bool)
+		for _, actor := range d.Diagram.Actors {
+			actorSets[i][actor.ID] = true
+		}
+	}
+
+	// Find intersection of all actor sets
+	commonActors := make(map[string]bool)
+	for actor := range actorSets[0] {
+		commonActors[actor] = true
+	}
+
+	for i := 1; i < len(actorSets); i++ {
+		for actor := range commonActors {
+			if !actorSets[i][actor] {
+				delete(commonActors, actor)
+			}
+		}
+	}
+
+	if len(commonActors) == 0 {
+		return fmt.Errorf("no common actors found across all diagrams")
 	}
 
 	return nil
