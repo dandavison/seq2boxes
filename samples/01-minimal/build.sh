@@ -12,10 +12,10 @@ d2 sequence.d2 build/sequence.svg
 echo "Generating boxes and arrows diagrams..."
 
 # Default (detailed arrows, vertical layout)
-../../seq2boxes sequence.d2 | d2 - build/boxes-default.svg
+../../seq2boxes --layout vertical sequence.d2 | d2 - build/boxes-default.svg
 
-# Simple arrows
-../../seq2boxes --arrows simple sequence.d2 | d2 - build/boxes-simple.svg
+# Simple arrows with horizontal layout
+../../seq2boxes --layout horizontal --arrows simple sequence.d2 | d2 - build/boxes-simple.svg
 
 # Horizontal layout with detailed arrows
 ../../seq2boxes --layout horizontal sequence.d2 | d2 - build/boxes-horizontal.svg
@@ -25,8 +25,8 @@ echo "Generating boxes and arrows diagrams..."
 
 # Save D2 code outputs
 echo "Saving D2 code outputs..."
-../../seq2boxes sequence.d2 > build/boxes-default.d2
-../../seq2boxes --arrows simple sequence.d2 > build/boxes-simple.d2
+../../seq2boxes --layout vertical sequence.d2 > build/boxes-default.d2
+../../seq2boxes --layout horizontal --arrows simple sequence.d2 > build/boxes-simple.d2
 ../../seq2boxes --layout horizontal sequence.d2 > build/boxes-horizontal.d2
 ../../seq2boxes --theme dark-mauve sequence.d2 > build/boxes-dark.d2
 

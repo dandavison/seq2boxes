@@ -12,17 +12,17 @@ echo "Generating SVGs for Nexus sequence diagrams..."
 d2 nexus-a2a.d2 build/nexus-a2a.svg
 d2 nexus-mcp.d2 build/nexus-mcp.svg
 
-# Individual transformations
+# Individual transformations (horizontal layout)
 echo "Generating individual transformations..."
-../../seq2boxes nexus-a2a.d2 | d2 - build/boxes-a2a.svg
-../../seq2boxes nexus-mcp.d2 | d2 - build/boxes-mcp.svg
+../../seq2boxes --layout horizontal nexus-a2a.d2 | d2 - build/boxes-a2a.svg
+../../seq2boxes --layout horizontal nexus-mcp.d2 | d2 - build/boxes-mcp.svg
 
-# Combined transformation
+# Combined transformation (vertical layout)
 echo "Generating combined Nexus diagram..."
-../../seq2boxes nexus-a2a.d2 nexus-mcp.d2 | d2 - build/boxes-combined.svg
+../../seq2boxes --layout vertical nexus-a2a.d2 nexus-mcp.d2 | d2 - build/boxes-combined.svg
 
-# Simple arrows for high-level view
-../../seq2boxes --arrows simple nexus-a2a.d2 nexus-mcp.d2 | d2 - build/boxes-combined-simple.svg
+# Simple arrows with horizontal layout for high-level view
+../../seq2boxes --layout horizontal --arrows simple nexus-a2a.d2 nexus-mcp.d2 | d2 - build/boxes-combined-simple.svg
 
 # Horizontal layout
 ../../seq2boxes --layout horizontal nexus-a2a.d2 nexus-mcp.d2 | d2 - build/boxes-combined-horizontal.svg
@@ -36,10 +36,10 @@ echo "Generating verbose output example..."
 
 # Generate all D2 code samples
 echo "Generating D2 code samples..."
-../../seq2boxes nexus-a2a.d2 > build/boxes-a2a.d2
-../../seq2boxes nexus-mcp.d2 > build/boxes-mcp.d2
-../../seq2boxes nexus-a2a.d2 nexus-mcp.d2 > build/boxes-combined.d2
-../../seq2boxes --arrows simple nexus-a2a.d2 nexus-mcp.d2 > build/boxes-combined-simple.d2
+../../seq2boxes --layout horizontal nexus-a2a.d2 > build/boxes-a2a.d2
+../../seq2boxes --layout horizontal nexus-mcp.d2 > build/boxes-mcp.d2
+../../seq2boxes --layout vertical nexus-a2a.d2 nexus-mcp.d2 > build/boxes-combined.d2
+../../seq2boxes --layout horizontal --arrows simple nexus-a2a.d2 nexus-mcp.d2 > build/boxes-combined-simple.d2
 ../../seq2boxes --layout horizontal nexus-a2a.d2 nexus-mcp.d2 > build/boxes-combined-horizontal.d2
 ../../seq2boxes --theme flagship-terrastruct nexus-a2a.d2 nexus-mcp.d2 > build/boxes-combined-flagship.d2
 
@@ -77,16 +77,29 @@ DESCRIPTION="Real-world Nexus sequence diagrams demonstrating seq2boxes on compl
 # Prepare original code
 ORIGINAL_CODE=$(cat build/combined-original.d2 | escape_html)
 
-# Build tabs
-TABS=$(make_tab "horizontal" "Horizontal" "true")$'\n'
+# Build tabs - start with original
+TABS=$(make_tab "original" "Original" "true")$'\n'
+TABS+=$(make_tab "horizontal" "Horizontal" "false")$'\n'
 TABS+=$(make_tab "combined" "Vertical Combined" "false")$'\n'
 TABS+=$(make_tab "simple" "Simple Arrows" "false")$'\n'
 TABS+=$(make_tab "a2a" "A2A Only" "false")$'\n'
 TABS+=$(make_tab "mcp" "MCP Only" "false")$'\n'
 TABS+=$(make_tab "flagship" "Flagship Theme" "false")
 
-# Build tab contents
-TAB_CONTENTS=$(make_tab_content "horizontal" "Combined Horizontal" "build/boxes-combined-horizontal.svg" "build/boxes-combined-horizontal.d2" "true")$'\n\n'
+# Build tab contents - original first
+TAB_CONTENTS='<div id="tab-original" class="tab-content">
+  <div class="diagram-container">
+    '$ORIGINAL_DIAGRAMS'
+  </div>
+  <div class="code-container hidden">
+    <div class="code-header">
+      <span>Original D2 Sequence Diagrams</span>
+      <button class="copy-button">Copy</button>
+    </div>
+    <pre><code>'$ORIGINAL_CODE'</code></pre>
+  </div>
+</div>\n\n'
+TAB_CONTENTS+=$(make_tab_content "horizontal" "Combined Horizontal" "build/boxes-combined-horizontal.svg" "build/boxes-combined-horizontal.d2" "false")$'\n\n'
 TAB_CONTENTS+=$(make_tab_content "combined" "Combined Vertical" "build/boxes-combined.svg" "build/boxes-combined.d2" "false")$'\n\n'
 TAB_CONTENTS+=$(make_tab_content "simple" "Combined Simple Arrows" "build/boxes-combined-simple.svg" "build/boxes-combined-simple.d2" "false")$'\n\n'
 TAB_CONTENTS+=$(make_tab_content "a2a" "A2A Boxes and Arrows" "build/boxes-a2a.svg" "build/boxes-a2a.d2" "false")$'\n\n'
@@ -96,8 +109,6 @@ TAB_CONTENTS+=$(make_tab_content "flagship" "Flagship Theme" "build/boxes-combin
 # Replace placeholders in template
 HTML="${TEMPLATE//\{\{TITLE\}\}/$TITLE}"
 HTML="${HTML//\{\{DESCRIPTION\}\}/$DESCRIPTION}"
-HTML="${HTML//\{\{ORIGINAL_DIAGRAM\}\}/$ORIGINAL_DIAGRAMS}"
-HTML="${HTML//\{\{ORIGINAL_CODE\}\}/$ORIGINAL_CODE}"
 HTML="${HTML//\{\{TABS\}\}/$TABS}"
 HTML="${HTML//\{\{TAB_CONTENTS\}\}/$TAB_CONTENTS}"
 

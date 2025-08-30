@@ -15,27 +15,27 @@ d2 backend-flow.d2 build/backend-flow.svg
 # Generate combined boxes and arrows diagram
 echo "Generating combined diagram from multiple inputs..."
 
-# Default combined diagram
-../../seq2boxes frontend-flow.d2 backend-flow.d2 | d2 - build/boxes-combined.svg
+# Default combined diagram (vertical layout)
+../../seq2boxes --layout vertical frontend-flow.d2 backend-flow.d2 | d2 - build/boxes-combined.svg
 
-# Simple arrows version
-../../seq2boxes --arrows simple frontend-flow.d2 backend-flow.d2 | d2 - build/boxes-combined-simple.svg
+# Simple arrows with horizontal layout
+../../seq2boxes --layout horizontal --arrows simple frontend-flow.d2 backend-flow.d2 | d2 - build/boxes-combined-simple.svg
 
 # Horizontal layout
 ../../seq2boxes --layout horizontal frontend-flow.d2 backend-flow.d2 | d2 - build/boxes-combined-horizontal.svg
 
 # Single diagram transformations for comparison
 echo "Generating individual transformations..."
-../../seq2boxes frontend-flow.d2 | d2 - build/boxes-frontend-only.svg
-../../seq2boxes backend-flow.d2 | d2 - build/boxes-backend-only.svg
+../../seq2boxes --layout horizontal frontend-flow.d2 | d2 - build/boxes-frontend-only.svg
+../../seq2boxes --layout horizontal backend-flow.d2 | d2 - build/boxes-backend-only.svg
 
 # Generate all D2 code outputs
 echo "Saving D2 code outputs..."
-../../seq2boxes frontend-flow.d2 backend-flow.d2 > build/boxes-combined.d2
-../../seq2boxes --arrows simple frontend-flow.d2 backend-flow.d2 > build/boxes-combined-simple.d2
+../../seq2boxes --layout vertical frontend-flow.d2 backend-flow.d2 > build/boxes-combined.d2
+../../seq2boxes --layout horizontal --arrows simple frontend-flow.d2 backend-flow.d2 > build/boxes-combined-simple.d2
 ../../seq2boxes --layout horizontal frontend-flow.d2 backend-flow.d2 > build/boxes-combined-horizontal.d2
-../../seq2boxes frontend-flow.d2 > build/boxes-frontend-only.d2
-../../seq2boxes backend-flow.d2 > build/boxes-backend-only.d2
+../../seq2boxes --layout horizontal frontend-flow.d2 > build/boxes-frontend-only.d2
+../../seq2boxes --layout horizontal backend-flow.d2 > build/boxes-backend-only.d2
 
 # Generate index.html with special handling for multiple diagrams
 echo "Generating index.html..."

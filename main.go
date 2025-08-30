@@ -27,7 +27,7 @@ func main() {
 func parseFlags() Config {
 	var config Config
 
-	flag.StringVar(&config.Layout, "layout", "vertical", "Layout direction: vertical or horizontal")
+	flag.StringVar(&config.Layout, "layout", "horizontal", "Layout direction: horizontal or vertical")
 	flag.StringVar(&config.ArrowMode, "arrows", "detailed", "Arrow mode: simple (single arrow) or detailed (numbered with colors)")
 	flag.StringVar(&config.Theme, "theme", "neutral-default", "D2 theme to use")
 	flag.BoolVar(&config.Verbose, "verbose", false, "Enable verbose output to stderr")

@@ -1,4 +1,4 @@
 Converting 1 diagram(s)
-Layout: vertical, Arrow mode: detailed
+Layout: horizontal, Arrow mode: detailed
 Parsed nexus-a2a.d2: 5 actors, 14 messages
 Conversion complete

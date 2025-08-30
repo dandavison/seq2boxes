@@ -15,10 +15,10 @@ d2 order-processing.d2 build/order-processing.svg
 echo "Generating various transformations..."
 
 # Default (detailed arrows, vertical layout)
-../../seq2boxes order-processing.d2 | d2 - build/boxes-default.svg
+../../seq2boxes --layout vertical order-processing.d2 | d2 - build/boxes-default.svg
 
-# Simple arrows (shows high-level connectivity)
-../../seq2boxes --arrows simple order-processing.d2 | d2 - build/boxes-simple.svg
+# Simple arrows with horizontal layout (shows high-level connectivity)
+../../seq2boxes --layout horizontal --arrows simple order-processing.d2 | d2 - build/boxes-simple.svg
 
 # Horizontal layout with detailed arrows
 ../../seq2boxes --layout horizontal order-processing.d2 | d2 - build/boxes-horizontal.svg
@@ -28,8 +28,8 @@ echo "Generating various transformations..."
 
 # Generate the D2 code for inspection
 echo "Generating D2 code samples..."
-../../seq2boxes order-processing.d2 > build/boxes-default.d2
-../../seq2boxes --arrows simple order-processing.d2 > build/boxes-simple.d2
+../../seq2boxes --layout vertical order-processing.d2 > build/boxes-default.d2
+../../seq2boxes --layout horizontal --arrows simple order-processing.d2 > build/boxes-simple.d2
 ../../seq2boxes --layout horizontal order-processing.d2 > build/boxes-horizontal.d2
 ../../seq2boxes --theme cool-classics order-processing.d2 > build/boxes-cool.d2
 

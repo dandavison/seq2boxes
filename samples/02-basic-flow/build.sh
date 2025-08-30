@@ -12,10 +12,10 @@ d2 auth-flow.d2 build/auth-flow.svg
 echo "Generating boxes and arrows transformations..."
 
 # Default (detailed arrows, vertical layout)
-../../seq2boxes auth-flow.d2 | d2 - build/boxes-default.svg
+../../seq2boxes --layout vertical auth-flow.d2 | d2 - build/boxes-default.svg
 
-# Simple arrows
-../../seq2boxes --arrows simple auth-flow.d2 | d2 - build/boxes-simple.svg
+# Simple arrows with horizontal layout
+../../seq2boxes --layout horizontal --arrows simple auth-flow.d2 | d2 - build/boxes-simple.svg
 
 # Horizontal layout
 ../../seq2boxes --layout horizontal auth-flow.d2 | d2 - build/boxes-horizontal.svg
@@ -25,8 +25,8 @@ echo "Generating boxes and arrows transformations..."
 
 # Save D2 code outputs
 echo "Saving D2 code outputs..."
-../../seq2boxes auth-flow.d2 > build/boxes-default.d2
-../../seq2boxes --arrows simple auth-flow.d2 > build/boxes-simple.d2
+../../seq2boxes --layout vertical auth-flow.d2 > build/boxes-default.d2
+../../seq2boxes --layout horizontal --arrows simple auth-flow.d2 > build/boxes-simple.d2
 ../../seq2boxes --layout horizontal auth-flow.d2 > build/boxes-horizontal.d2
 ../../seq2boxes --theme vanilla-nitro auth-flow.d2 > build/boxes-vanilla.d2
 
