@@ -12,8 +12,6 @@ type Config struct {
 	Layout     string
 	ArrowMode  string
 	Theme      string
-	NoLabels   bool
-	NoGroups   bool
 	Verbose    bool
 }
 
@@ -32,8 +30,6 @@ func parseFlags() Config {
 	flag.StringVar(&config.Layout, "layout", "vertical", "Layout direction: vertical or horizontal")
 	flag.StringVar(&config.ArrowMode, "arrows", "detailed", "Arrow mode: simple (single arrow) or detailed (numbered with colors)")
 	flag.StringVar(&config.Theme, "theme", "neutral-default", "D2 theme to use")
-	flag.BoolVar(&config.NoLabels, "no-labels", false, "Remove all message labels")
-	flag.BoolVar(&config.NoGroups, "no-groups", false, "Remove grouping containers (Infrastructure, External, etc.)")
 	flag.BoolVar(&config.Verbose, "verbose", false, "Enable verbose output to stderr")
 
 	flag.Usage = func() {
@@ -46,18 +42,7 @@ func parseFlags() Config {
 		fmt.Fprintf(os.Stderr, "  <input-file>    Input D2 sequence diagram file(s) (use '-' for stdin)\n")
 		fmt.Fprintf(os.Stderr, "                  Multiple files will be aligned by common actors\n\n")
 		fmt.Fprintf(os.Stderr, "Options:\n")
-		fmt.Fprintf(os.Stderr, "  --layout string\n")
-		fmt.Fprintf(os.Stderr, "        Layout direction: vertical or horizontal (default \"vertical\")\n")
-		fmt.Fprintf(os.Stderr, "  --arrows string\n")
-		fmt.Fprintf(os.Stderr, "        Arrow mode: simple (single arrow) or detailed (numbered with colors) (default \"detailed\")\n")
-		fmt.Fprintf(os.Stderr, "  --theme string\n")
-		fmt.Fprintf(os.Stderr, "        D2 theme to use (default \"neutral-default\")\n")
-		fmt.Fprintf(os.Stderr, "  --no-labels\n")
-		fmt.Fprintf(os.Stderr, "        Remove all message labels\n")
-		fmt.Fprintf(os.Stderr, "  --no-groups\n")
-		fmt.Fprintf(os.Stderr, "        Remove grouping containers (Infrastructure, External, etc.)\n")
-		fmt.Fprintf(os.Stderr, "  --verbose\n")
-		fmt.Fprintf(os.Stderr, "        Enable verbose output to stderr\n")
+		flag.PrintDefaults()
 		fmt.Fprintf(os.Stderr, "\nExamples:\n")
 		fmt.Fprintf(os.Stderr, "  %s diagram.d2\n", os.Args[0])
 		fmt.Fprintf(os.Stderr, "  %s diagram1.d2 diagram2.d2 diagram3.d2\n", os.Args[0])

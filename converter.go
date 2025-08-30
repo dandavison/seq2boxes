@@ -19,7 +19,7 @@ func convertToBoxesAndArrows(seqDiagram *SequenceDiagram, config Config) (string
 	if config.ArrowMode == "simple" {
 		writeSimpleArrows(&builder, seqDiagram.Messages)
 	} else {
-		writeDetailedArrowsWithConfig(&builder, seqDiagram.Messages, config)
+		writeDetailedArrows(&builder, seqDiagram.Messages)
 	}
 
 	return builder.String(), nil
@@ -53,7 +53,7 @@ func convertMultipleDiagrams(diagrams []*NamedSequenceDiagram, config Config) (s
 		if config.ArrowMode == "simple" {
 			writeSimpleArrowsWithPrefix(&builder, adjustedMessages, "  ")
 		} else {
-			writeDetailedArrowsWithPrefixAndConfig(&builder, adjustedMessages, "  ", config)
+			writeDetailedArrowsWithPrefix(&builder, adjustedMessages, "  ")
 		}
 
 		builder.WriteString("}\n")
@@ -183,29 +183,17 @@ func createActorGroups(actors []Actor) map[string][]Actor {
 }
 
 func writeActorGroups(builder *strings.Builder, groups map[string][]Actor, config Config) {
-	if config.NoGroups {
-		// Write all actors without groups
-		var allActors []Actor
-		for _, actors := range groups {
-			allActors = append(allActors, actors...)
+	for groupName, actors := range groups {
+		if groupName != "" {
+			builder.WriteString(fmt.Sprintf("\"%s\": {\n", groupName))
 		}
-		for _, actor := range allActors {
-			writeActor(builder, actor, false)
+
+		for _, actor := range actors {
+			writeActor(builder, actor, groupName != "")
 		}
-	} else {
-		// Write actors with groups
-		for groupName, actors := range groups {
-			if groupName != "" {
-				builder.WriteString(fmt.Sprintf("\"%s\": {\n", groupName))
-			}
 
-			for _, actor := range actors {
-				writeActor(builder, actor, groupName != "")
-			}
-
-			if groupName != "" {
-				builder.WriteString("}\n\n")
-			}
+		if groupName != "" {
+			builder.WriteString("}\n\n")
 		}
 	}
 }
@@ -292,32 +280,19 @@ func writeDetailedArrows(builder *strings.Builder, messages []Message) {
 	writeDetailedArrowsWithPrefix(builder, messages, "")
 }
 
-func writeDetailedArrowsWithConfig(builder *strings.Builder, messages []Message, config Config) {
-	builder.WriteString("\n# Messages (detailed with sequence numbers)\n")
-	writeDetailedArrowsWithPrefixAndConfig(builder, messages, "", config)
-}
-
 func writeDetailedArrowsWithPrefix(builder *strings.Builder, messages []Message, prefix string) {
-	writeDetailedArrowsWithPrefixAndConfig(builder, messages, prefix, Config{})
-}
-
-func writeDetailedArrowsWithPrefixAndConfig(builder *strings.Builder, messages []Message, prefix string, config Config) {
 	// Analyze message patterns
 	returnMessages := analyzeReturnMessages(messages)
 
 	for _, msg := range messages {
 		from := formatActorRef(msg.From)
 		to := formatActorRef(msg.To)
-
-		if config.NoLabels {
-			builder.WriteString(fmt.Sprintf("%s%s -> %s", prefix, from, to))
-		} else {
-			label := formatMessageLabel(msg)
-			builder.WriteString(fmt.Sprintf("%s%s -> %s: \"%s\"", prefix, from, to, label))
-		}
+		label := formatMessageLabel(msg)
 
 		// Determine if this is a return message
 		isReturn := returnMessages[msg.Index]
+
+		builder.WriteString(fmt.Sprintf("%s%s -> %s: \"%s\"", prefix, from, to, label))
 
 		// Add styling
 		if isReturn {
