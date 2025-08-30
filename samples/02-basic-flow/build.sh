@@ -45,18 +45,28 @@ TEMPLATE=$(<../assets/template.html)
 TITLE="Sample 02: Basic Authentication Flow"
 DESCRIPTION="A typical authentication flow with four actors: User, Web Application, Auth Service, and Database"
 
-# Prepare original diagram and code
-ORIGINAL_DIAGRAM='<img src="build/auth-flow.svg" alt="Original Sequence Diagram">'
-ORIGINAL_CODE=$(cat auth-flow.d2 | escape_html)
-
-# Build tabs
-TABS='<button class="tab active" data-target="tab-horizontal">Horizontal</button>
+# Build tabs - including original as first tab
+TABS='<button class="tab active" data-target="tab-original">Original</button>
+<button class="tab" data-target="tab-horizontal">Horizontal</button>
 <button class="tab" data-target="tab-default">Vertical</button>
 <button class="tab" data-target="tab-simple">Simple Arrows</button>
 <button class="tab" data-target="tab-vanilla">Vanilla Theme</button>'
 
 # Build tab contents
-TAB_CONTENTS='<div id="tab-horizontal" class="tab-content">
+TAB_CONTENTS='<div id="tab-original" class="tab-content">
+  <div class="diagram-container">
+    <img src="build/auth-flow.svg" alt="Original Sequence Diagram">
+  </div>
+  <div class="code-container hidden">
+    <div class="code-header">
+      <span>Original D2 Sequence Diagram</span>
+      <button class="copy-button">Copy</button>
+    </div>
+    <pre><code>'$(cat auth-flow.d2 | escape_html)'</code></pre>
+  </div>
+</div>
+
+<div id="tab-horizontal" class="tab-content hidden">
   <div class="diagram-container">
     <img src="build/boxes-horizontal.svg" alt="Horizontal Layout">
   </div>
@@ -111,8 +121,6 @@ TAB_CONTENTS='<div id="tab-horizontal" class="tab-content">
 # Replace placeholders in template
 HTML="${TEMPLATE//\{\{TITLE\}\}/$TITLE}"
 HTML="${HTML//\{\{DESCRIPTION\}\}/$DESCRIPTION}"
-HTML="${HTML//\{\{ORIGINAL_DIAGRAM\}\}/$ORIGINAL_DIAGRAM}"
-HTML="${HTML//\{\{ORIGINAL_CODE\}\}/$ORIGINAL_CODE}"
 HTML="${HTML//\{\{TABS\}\}/$TABS}"
 HTML="${HTML//\{\{TAB_CONTENTS\}\}/$TAB_CONTENTS}"
 

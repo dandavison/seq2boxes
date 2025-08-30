@@ -29,40 +29,16 @@
   </nav>
   
   <div class="main-container">
-    <!-- Top Panel: Original Sequence Diagram -->
-    <div class="panel top-panel">
-      <div class="panel-header">
-        <h2 class="panel-title">Original Sequence Diagram</h2>
-        <div class="subtitle">{{DESCRIPTION}}</div>
-      </div>
-      
-      <div class="content">
-        <div class="diagram-container">
-          {{ORIGINAL_DIAGRAM}}
-        </div>
-        <div class="code-container hidden">
-          <div class="code-header">
-            <span>D2 Sequence Diagram</span>
-            <button class="copy-button">Copy</button>
-          </div>
-          <pre><code>{{ORIGINAL_CODE}}</code></pre>
-        </div>
-      </div>
+    <div class="description-bar">
+      {{DESCRIPTION}}
     </div>
     
-    <!-- Bottom Panel: Transformations -->
-    <div class="panel bottom-panel">
-      <div class="panel-header">
-        <h2 class="panel-title">Transformations</h2>
-      </div>
-      
-      <div class="tabs">
-        {{TABS}}
-      </div>
-      
-      <div class="tab-contents">
-        {{TAB_CONTENTS}}
-      </div>
+    <div class="tabs">
+      {{TABS}}
+    </div>
+    
+    <div class="tab-contents">
+      {{TAB_CONTENTS}}
     </div>
   </div>
   

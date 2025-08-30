@@ -60,15 +60,23 @@ generate_html() {
     # Read template
     local template=$(<../assets/template.html)
     
-    # Prepare original diagram and code
-    local original_diagram="<img src=\"$original_svg\" alt=\"Original Sequence Diagram\">"
+    # Build tabs and contents - start with original as first tab
+    local tabs=$(make_tab "original" "Original" "true")
     local original_code=$(cat "$original_d2" | escape_html)
+    local tab_contents="<div id=\"tab-original\" class=\"tab-content\">
+  <div class=\"diagram-container\">
+    <img src=\"$original_svg\" alt=\"Original Sequence Diagram\">
+  </div>
+  <div class=\"code-container hidden\">
+    <div class=\"code-header\">
+      <span>Original D2 Sequence Diagram</span>
+      <button class=\"copy-button\">Copy</button>
+    </div>
+    <pre><code>$original_code</code></pre>
+  </div>
+</div>"
     
-    # Build tabs and contents
-    local tabs=""
-    local tab_contents=""
-    local first=true
-    
+    # Add transformation tabs
     while [ $# -gt 0 ]; do
         local tab_id="$1"
         local tab_label="$2"
@@ -76,21 +84,13 @@ generate_html() {
         local d2_file="$4"
         shift 4
         
-        if [ "$first" = "true" ]; then
-            tabs+=$(make_tab "$tab_id" "$tab_label" "true")
-            tab_contents+=$(make_tab_content "$tab_id" "$tab_label" "$svg_file" "$d2_file" "true")
-            first=false
-        else
-            tabs+=$'\n'$(make_tab "$tab_id" "$tab_label" "false")
-            tab_contents+=$'\n\n'$(make_tab_content "$tab_id" "$tab_label" "$svg_file" "$d2_file" "false")
-        fi
+        tabs+=$'\n'$(make_tab "$tab_id" "$tab_label" "false")
+        tab_contents+=$'\n\n'$(make_tab_content "$tab_id" "$tab_label" "$svg_file" "$d2_file" "false")
     done
     
     # Replace placeholders in template
     local html="${template//\{\{TITLE\}\}/$title}"
     html="${html//\{\{DESCRIPTION\}\}/$description}"
-    html="${html//\{\{ORIGINAL_DIAGRAM\}\}/$original_diagram}"
-    html="${html//\{\{ORIGINAL_CODE\}\}/$original_code}"
     html="${html//\{\{TABS\}\}/$tabs}"
     html="${html//\{\{TAB_CONTENTS\}\}/$tab_contents}"
     
